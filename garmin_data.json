@@ -1,0 +1,49 @@
+{
+  "date": "7 Jun 2026",
+  "vo2max": 51,
+  "vo2maxPrecise": 50.6,
+  "loadRatio": "1.1",
+  "loadSub": "optimal · building nicely",
+  "hrvStatus": "Balanced",
+  "hrvSub": "53 ms weekly avg · last night 61 ms",
+  "longestRunKm": 23.0,
+  "longestRunDate": "7 Jun",
+  "trainingStatus": "Productive",
+  "aerobicBalance": "Low shortage",
+  "aerobicBalanceSub": "more easy aerobic work needed",
+  "stepsAvgK": "110k",
+  "stepsKmWeekly": "~93 km/week on foot",
+  "amReadiness": 73,
+  "readinessSub": "39 hrs recovery needed post-run",
+  "runsThisWeek": "3 sessions",
+  "runDistWeek": "35.3 km",
+  "longestRunEver": "23.0 km · 7 Jun",
+  "todayAvgHR": "143 bpm ✓",
+  "totalRuns": "19 sessions",
+  "predMarathon": "4:18:06",
+  "sleepScore": "85/100 · Good",
+  "sleepColour": "sv-green",
+  "switzDays": "20 days",
+  "avgRunHR": 154,
+  "pred5k": "23:24",
+  "pred10k": "50:56",
+  "predHM": "1:56:01",
+  "predMarathonFull": "4:18:06",
+  "runs": [
+    {"date": "7 Jun", "dist": 23.0, "hr": 143, "pb": true},
+    {"date": "4 Jun", "dist": 6.2, "hr": 130},
+    {"date": "1 Jun", "dist": 6.0, "hr": 164},
+    {"date": "26 May", "dist": 9.0, "hr": 162},
+    {"date": "23 May", "dist": 2.6, "hr": 155},
+    {"date": "21 May", "dist": 10.1, "hr": 162},
+    {"date": "17 May", "dist": 12.3, "hr": 164}
+  ],
+  "vo2Trend": {
+    "labels": ["1 Mar", "15 Mar", "1 Apr", "14 Apr", "12 May", "23 May", "7 Jun"],
+    "data": [50, 49, 48, 49, 50, 51, 51]
+  },
+  "stepsChart": {
+    "data": [107757, 108343, 103099, 114372, 104692, 96953, 111657, 130102],
+    "labels": ["13 Apr", "20 Apr", "27 Apr", "4 May", "11 May", "18 May", "25 May", "1 Jun"]
+  }
+}

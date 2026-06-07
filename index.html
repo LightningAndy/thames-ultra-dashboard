@@ -171,42 +171,42 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
   <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
 </div>
 
-<div class="sec-head">fitness vitals · 7 Jun 2026</div>
+<div class="sec-head" id="g-vitals-date">fitness vitals · 7 Jun 2026</div>
 <div class="g4">
   <div class="card">
     <div class="card-label">VO2 max</div>
-    <div class="card-value">51</div>
-    <div class="card-sub">↑ from 50 · trending up</div>
+    <div class="card-value" id="g-vo2-value">51</div>
+    <div class="card-sub" id="g-vo2-sub">↑ from 50 · trending up</div>
   </div>
   <div class="card card-blue">
     <div class="card-label">Load ratio</div>
-    <div class="card-value cv-blue">1.1</div>
-    <div class="card-sub">optimal · building nicely</div>
+    <div class="card-value cv-blue" id="g-load-ratio">1.1</div>
+    <div class="card-sub" id="g-load-sub">optimal · building nicely</div>
   </div>
   <div class="card card-pink">
     <div class="card-label">HRV status</div>
-    <div class="card-value cv-pink" style="font-size:1.1rem;padding-top:6px">Balanced</div>
-    <div class="card-sub">53 ms weekly avg · last night 61 ms</div>
+    <div class="card-value cv-pink" id="g-hrv-status" style="font-size:1.1rem;padding-top:6px">Balanced</div>
+    <div class="card-sub" id="g-hrv-sub">53 ms weekly avg · last night 61 ms</div>
   </div>
   <div class="card">
     <div class="card-label">Longest run ever</div>
-    <div class="card-value cv-green">23<span style="font-size:1rem"> km</span></div>
-    <div class="card-sub">7 Jun 2026 · new PB</div>
+    <div class="card-value cv-green" id="g-longest-run">23<span style="font-size:1rem"> km</span></div>
+    <div class="card-sub" id="g-longest-sub">7 Jun · new PB</div>
   </div>
   <div class="card card-blue">
     <div class="card-label">Training status</div>
-    <div class="card-value cv-blue" style="font-size:1rem;padding-top:8px">Productive</div>
-    <div class="card-sub">fitness trending up</div>
+    <div class="card-value cv-blue" id="g-status-val" style="font-size:1rem;padding-top:8px">Productive</div>
+    <div class="card-sub" id="g-status-sub">fitness trending up</div>
   </div>
   <div class="card">
     <div class="card-label">Aerobic balance</div>
-    <div class="card-value cv-pink" style="font-size:.9rem;padding-top:8px">Low shortage</div>
-    <div class="card-sub">today's run helps fix this</div>
+    <div class="card-value cv-pink" id="g-aerobic-val" style="font-size:.9rem;padding-top:8px">Low shortage</div>
+    <div class="card-sub" id="g-aerobic-sub">more easy aerobic work needed</div>
   </div>
   <div class="card card-pink">
     <div class="card-label">Weekly avg steps</div>
-    <div class="card-value" style="font-size:1.3rem">110k</div>
-    <div class="card-sub">~93 km/week on foot</div>
+    <div class="card-value" id="g-steps-val" style="font-size:1.3rem">110k</div>
+    <div class="card-sub" id="g-steps-sub">~93 km/week on foot</div>
   </div>
   <div class="card card-blue">
     <div class="card-label">Days to race</div>
@@ -215,8 +215,8 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
   </div>
   <div class="card">
     <div class="card-label">AM Readiness</div>
-    <div class="card-value cv-green">73</div>
-    <div class="card-sub">39 hrs recovery needed post-run</div>
+    <div class="card-value cv-green" id="g-readiness-val">73</div>
+    <div class="card-sub" id="g-readiness-sub">39 hrs recovery needed post-run</div>
   </div>
 </div>
 
@@ -239,10 +239,10 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
   <div class="card">
     <div class="card-label">Garmin predicted finish times</div>
     <ul class="stat-list">
-      <li><span class="k">5 km</span><span class="v sv-blue">23:24</span></li>
-      <li><span class="k">10 km</span><span class="v sv-blue">50:56</span></li>
-      <li><span class="k">Half marathon</span><span class="v sv-purple">1:56:01</span></li>
-      <li><span class="k">Marathon</span><span class="v sv-purple">4:18:06</span></li>
+      <li><span class="k">5 km</span><span class="v sv-blue" id="g-pred-5k">23:24</span></li>
+      <li><span class="k">10 km</span><span class="v sv-blue" id="g-pred-10k">50:56</span></li>
+      <li><span class="k">Half marathon</span><span class="v sv-purple" id="g-pred-hm">1:56:01</span></li>
+      <li><span class="k">Marathon</span><span class="v sv-purple" id="g-pred-marathon">4:18:06</span></li>
       <li><span class="k" style="color:var(--text)">Ultra 100 km <span style="font-size:9px;color:var(--text-dim)">(estimated)</span></span><span class="v sv-pink" style="font-size:14px">~20–24 hrs</span></li>
     </ul>
     <div style="margin-top:.75rem;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.06em">Ultra estimate based on walk/jog strategy · improves as training builds</div>
@@ -259,7 +259,7 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
 <div class="fun-grid">
   <div class="fun-stat"><div class="fun-num" id="fun-days">96</div><div class="fun-label">days to race</div></div>
   <div class="fun-stat"><div class="fun-num" style="color:var(--neon-purple)">19</div><div class="fun-label">runs logged</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-pink)">154</div><div class="fun-label">avg bpm (↓ improving)</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-pink)" id="g-avg-bpm">154</div><div class="fun-label">avg run bpm (↓ improving)</div></div>
   <div class="fun-stat"><div class="fun-num" style="color:var(--neon-green)">51</div><div class="fun-label">VO2 max · up from 50</div></div>
   <div class="fun-stat"><div class="fun-num" style="color:var(--neon-blue)">2,500</div><div class="fun-label">cal burned today</div></div>
   <div class="fun-stat"><div class="fun-num" style="color:var(--neon-purple)">7</div><div class="fun-label">gym sessions</div></div>
@@ -302,14 +302,14 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
   <div class="card card-blue">
     <div class="card-label">Key stats</div>
     <ul class="stat-list">
-      <li><span class="k">Runs this week</span><span class="v sv-green">3 sessions</span></li>
-      <li><span class="k">Run distance this week</span><span class="v sv-green">35.3 km</span></li>
-      <li><span class="k">Longest run ever</span><span class="v sv-green">23 km · today</span></li>
-      <li><span class="k">Today's avg HR</span><span class="v sv-green">143 bpm ✓</span></li>
-      <li><span class="k">Total runs since Apr</span><span class="v sv-purple">19 sessions</span></li>
-      <li><span class="k">Predicted marathon</span><span class="v sv-blue">4:18:06</span></li>
-      <li><span class="k">Sleep score (last)</span><span class="v sv-green">85/100 · Good</span></li>
-      <li><span class="k">Switzerland departs</span><span class="v sv-pink">20 days</span></li>
+      <li><span class="k">Runs this week</span><span class="v sv-green" id="g-ks-runs-week">3 sessions</span></li>
+      <li><span class="k">Run distance this week</span><span class="v sv-green" id="g-ks-run-dist">35.3 km</span></li>
+      <li><span class="k">Longest run ever</span><span class="v sv-green" id="g-ks-longest">23.0 km · 7 Jun</span></li>
+      <li><span class="k">Today's avg HR</span><span class="v sv-green" id="g-ks-today-hr">143 bpm ✓</span></li>
+      <li><span class="k">Total runs since Apr</span><span class="v sv-purple" id="g-ks-total-runs">19 sessions</span></li>
+      <li><span class="k">Predicted marathon</span><span class="v sv-blue" id="g-ks-marathon">4:18:06</span></li>
+      <li><span class="k">Sleep score (last)</span><span class="v sv-green" id="g-ks-sleep">85/100 · Good</span></li>
+      <li><span class="k">Switzerland departs</span><span class="v sv-pink" id="g-ks-switz">20 days</span></li>
     </ul>
   </div>
 </div>
@@ -333,7 +333,7 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
 
 <footer>
   <div>Thames Path Ultra Challenge · 12–13 September 2026 · ultrachallenge.com</div>
-  <div>Garmin data · 7 Jun 2026 · <span class="live-dot"></span> live · auto-refreshes every 2 hrs</div>
+  <div id="g-footer-date">Garmin data · 7 Jun 2026 · <span class="live-dot"></span> live · auto-refreshes every 2 hrs</div>
 </footer>
 
 </div>
@@ -342,7 +342,24 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
 const RACE=new Date('2026-09-12T06:00:00');
 const TRAIN_START=new Date('2026-05-18T00:00:00');
 
-const RUNS=[
+// --- Run list ---
+function renderRuns(runs){
+  const maxD=Math.max(...runs.map(r=>r.dist));
+  document.getElementById('run-list').innerHTML=runs.map(r=>{
+    const pct=Math.round((r.dist/maxD)*100);
+    const hrClass=r.hr<=145?'hr-good':r.hr<=158?'hr-ok':'hr-high';
+    const pb=r.pb?'<span class="pb-badge">PB</span>':'';
+    return `<div class="run-row">
+      <div class="run-date">${r.date}</div>
+      <div class="run-dist">${r.dist} km${pb}</div>
+      <div class="run-bar-wrap"><div class="run-bar" style="width:${pct}%"></div></div>
+      <div class="run-hr ${hrClass}">${r.hr} bpm</div>
+    </div>`;
+  }).join('');
+}
+
+// Static fallback data — shown instantly, overwritten by garmin_data.json fetch below
+renderRuns([
   {date:'7 Jun',dist:23.0,hr:143,pb:true},
   {date:'4 Jun',dist:6.2,hr:130},
   {date:'1 Jun',dist:6.0,hr:164},
@@ -350,20 +367,9 @@ const RUNS=[
   {date:'23 May',dist:2.6,hr:155},
   {date:'21 May',dist:10.1,hr:162},
   {date:'17 May',dist:12.3,hr:164},
-];
-const maxD=23.0;
-document.getElementById('run-list').innerHTML=RUNS.map(r=>{
-  const pct=Math.round((r.dist/maxD)*100);
-  const hrClass=r.hr<=145?'hr-good':r.hr<=158?'hr-ok':'hr-high';
-  const pb=r.pb?'<span class="pb-badge">PB</span>':'';
-  return `<div class="run-row">
-    <div class="run-date">${r.date}</div>
-    <div class="run-dist">${r.dist} km${pb}</div>
-    <div class="run-bar-wrap"><div class="run-bar" style="width:${pct}%"></div></div>
-    <div class="run-hr ${hrClass}">${r.hr} bpm</div>
-  </div>`;
-}).join('');
+]);
 
+// --- Countdown + progress ---
 function pad(n){return String(n).padStart(2,'0')}
 function tick(){
   const now=new Date();
@@ -408,52 +414,94 @@ document.getElementById('motivation-text').innerHTML=MOTIVATIONS[Math.floor(Date
 tick();
 setInterval(tick,1000);
 
-const vo2Ctx=document.getElementById('vo2Chart').getContext('2d');
-new Chart(vo2Ctx,{
-  type:'line',
-  data:{
-    labels:['1 Mar','15 Mar','1 Apr','14 Apr','12 May','23 May','7 Jun'],
-    datasets:[{
-      label:'VO2 max',
-      data:[50,49,48,49,50,51,51],
-      borderColor:'#00F5FF',backgroundColor:'rgba(0,245,255,0.07)',
-      borderWidth:2,pointBackgroundColor:'#00F5FF',pointBorderColor:'#00F5FF',
-      pointRadius:3,fill:true,tension:0.4
-    }]
-  },
-  options:{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A0028',borderColor:'rgba(0,245,255,0.4)',borderWidth:1,titleColor:'#B08FD0',bodyColor:'#F0E6FF',callbacks:{label:c=>' VO2: '+c.parsed.y}}},
-    scales:{
-      x:{ticks:{color:'#6B4F88',font:{size:9},maxRotation:45},grid:{color:'rgba(180,79,255,0.08)'}},
-      y:{min:45,max:55,ticks:{color:'#6B4F88',font:{size:9},stepSize:1},grid:{color:'rgba(180,79,255,0.08)'}}
-    }
-  }
-});
+// --- Charts (stored as refs so they can be updated when garmin_data.json loads) ---
+let vo2ChartRef=null,stepsChartRef=null;
 
-const stepsCtx=document.getElementById('stepsChart').getContext('2d');
-const stepsData=[107757,108343,103099,114372,104692,96953,111657,130102];
-const stepsLabels=['13 Apr','20 Apr','27 Apr','4 May','11 May','18 May','25 May','1 Jun'];
-const avg=Math.round(stepsData.reduce((a,b)=>a+b,0)/stepsData.length);
-new Chart(stepsCtx,{
-  type:'bar',
-  data:{
-    labels:stepsLabels,
-    datasets:[
-      {label:'Steps',data:stepsData,backgroundColor:stepsData.map(v=>v>=avg?'rgba(180,79,255,0.7)':'rgba(180,79,255,0.25)'),borderColor:stepsData.map(v=>v>=avg?'#B44FFF':'rgba(180,79,255,0.4)'),borderWidth:1,borderRadius:0},
-      {label:'Avg',data:stepsData.map(()=>avg),type:'line',borderColor:'rgba(255,45,155,0.7)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false}
-    ]
-  },
-  options:{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A0028',borderColor:'rgba(180,79,255,0.4)',borderWidth:1,titleColor:'#B08FD0',bodyColor:'#F0E6FF',callbacks:{label:c=>c.dataset.label==='Avg'?' Avg: '+avg.toLocaleString():' '+c.parsed.y.toLocaleString()+' steps'}}},
-    scales:{
-      x:{ticks:{color:'#6B4F88',font:{size:9},maxRotation:45},grid:{display:false}},
-      y:{ticks:{color:'#6B4F88',font:{size:9},callback:v=>(v/1000).toFixed(0)+'k'},grid:{color:'rgba(180,79,255,0.08)'}}
-    }
+function initVO2Chart(labels,data){
+  if(vo2ChartRef){
+    vo2ChartRef.data.labels=labels;
+    vo2ChartRef.data.datasets[0].data=data;
+    vo2ChartRef.update();
+    return;
   }
-});
+  vo2ChartRef=new Chart(document.getElementById('vo2Chart').getContext('2d'),{
+    type:'line',
+    data:{labels,datasets:[{label:'VO2 max',data,borderColor:'#00F5FF',backgroundColor:'rgba(0,245,255,0.07)',borderWidth:2,pointBackgroundColor:'#00F5FF',pointBorderColor:'#00F5FF',pointRadius:3,fill:true,tension:0.4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A0028',borderColor:'rgba(0,245,255,0.4)',borderWidth:1,titleColor:'#B08FD0',bodyColor:'#F0E6FF',callbacks:{label:c=>' VO2: '+c.parsed.y}}},scales:{x:{ticks:{color:'#6B4F88',font:{size:9},maxRotation:45},grid:{color:'rgba(180,79,255,0.08)'}},y:{min:45,max:55,ticks:{color:'#6B4F88',font:{size:9},stepSize:1},grid:{color:'rgba(180,79,255,0.08)'}}}}
+  });
+}
 
+function initStepsChart(labels,data){
+  const avg=Math.round(data.reduce((a,b)=>a+b,0)/data.length);
+  const bg=data.map(v=>v>=avg?'rgba(180,79,255,0.7)':'rgba(180,79,255,0.25)');
+  const bc=data.map(v=>v>=avg?'#B44FFF':'rgba(180,79,255,0.4)');
+  if(stepsChartRef){
+    stepsChartRef.data.labels=labels;
+    stepsChartRef.data.datasets[0].data=data;
+    stepsChartRef.data.datasets[0].backgroundColor=bg;
+    stepsChartRef.data.datasets[0].borderColor=bc;
+    stepsChartRef.data.datasets[1].data=data.map(()=>avg);
+    stepsChartRef.update();
+    return;
+  }
+  stepsChartRef=new Chart(document.getElementById('stepsChart').getContext('2d'),{
+    type:'bar',
+    data:{labels,datasets:[{label:'Steps',data,backgroundColor:bg,borderColor:bc,borderWidth:1,borderRadius:0},{label:'Avg',data:data.map(()=>avg),type:'line',borderColor:'rgba(255,45,155,0.7)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A0028',borderColor:'rgba(180,79,255,0.4)',borderWidth:1,titleColor:'#B08FD0',bodyColor:'#F0E6FF',callbacks:{label:c=>c.dataset.label==='Avg'?' Avg: '+avg.toLocaleString():' '+c.parsed.y.toLocaleString()+' steps'}}},scales:{x:{ticks:{color:'#6B4F88',font:{size:9},maxRotation:45},grid:{display:false}},y:{ticks:{color:'#6B4F88',font:{size:9},callback:v=>(v/1000).toFixed(0)+'k'},grid:{color:'rgba(180,79,255,0.08)'}}}}
+  });
+}
+
+initVO2Chart(['1 Mar','15 Mar','1 Apr','14 Apr','12 May','23 May','7 Jun'],[50,49,48,49,50,51,51]);
+initStepsChart(['13 Apr','20 Apr','27 Apr','4 May','11 May','18 May','25 May','1 Jun'],[107757,108343,103099,114372,104692,96953,111657,130102]);
+
+// --- Apply garmin_data.json to DOM ---
+function $s(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+function $h(id,val){const e=document.getElementById(id);if(e)e.innerHTML=val;}
+
+function applyGarminData(G){
+  $h('g-vitals-date','fitness vitals · '+G.date);
+  $s('vo2-live',G.vo2max);
+  $s('g-vo2-value',G.vo2max);
+  $s('g-load-ratio',G.loadRatio);
+  $s('g-load-sub',G.loadSub);
+  $s('g-hrv-status',G.hrvStatus);
+  $s('g-hrv-sub',G.hrvSub);
+  const lr=document.getElementById('g-longest-run');
+  if(lr)lr.innerHTML=G.longestRunKm+'<span style="font-size:1rem"> km</span>';
+  $s('g-longest-sub',G.longestRunDate+' · new PB');
+  $s('g-status-val',G.trainingStatus);
+  $s('g-aerobic-val',G.aerobicBalance);
+  $s('g-aerobic-sub',G.aerobicBalanceSub);
+  $s('g-steps-val',G.stepsAvgK);
+  $s('g-steps-sub',G.stepsKmWeekly);
+  $s('g-readiness-val',G.amReadiness);
+  $s('g-readiness-sub',G.readinessSub);
+  $s('g-ks-runs-week',G.runsThisWeek);
+  $s('g-ks-run-dist',G.runDistWeek);
+  $s('g-ks-longest',G.longestRunEver);
+  $s('g-ks-today-hr',G.todayAvgHR);
+  $s('g-ks-total-runs',G.totalRuns);
+  $s('g-ks-marathon',G.predMarathon);
+  $s('g-ks-sleep',G.sleepScore);
+  $s('g-ks-switz',G.switzDays);
+  $s('g-pred-5k',G.pred5k);
+  $s('g-pred-10k',G.pred10k);
+  $s('g-pred-hm',G.predHM);
+  $s('g-pred-marathon',G.predMarathonFull);
+  $s('g-avg-bpm',G.avgRunHR);
+  $h('g-footer-date','Garmin data · '+G.date+' · <span class="live-dot"></span> live · auto-refreshes every 2 hrs');
+  if(G.runs)renderRuns(G.runs);
+  if(G.vo2Trend)initVO2Chart(G.vo2Trend.labels,G.vo2Trend.data);
+  if(G.stepsChart)initStepsChart(G.stepsChart.labels,G.stepsChart.data);
+}
+
+// Fetch live data — garmin_data.json is committed by the GitHub Actions workflow
+fetch('garmin_data.json?t='+Date.now())
+  .then(r=>r.ok?r.json():null)
+  .then(d=>{if(d)applyGarminData(d);})
+  .catch(()=>{});
+
+// --- Weather ---
 async function loadWeather(){
   const grid=document.getElementById('weather-grid');
   const status=document.getElementById('weather-status');
@@ -471,12 +519,12 @@ async function loadWeather(){
       const rain=d.hourly.precipitation_probability[h];
       const wind=Math.round(d.hourly.windspeed_10m[h]);
       const isStart=h===6;
-     return `<div class="weather-cell" style="${isStart?'border-color:var(--neon-blue);':''}">
+      return `<div class="weather-cell" style="${isStart?'border-color:var(--neon-blue);':''}">
         <div class="weather-time" style="${isStart?'color:var(--neon-blue)':''}">${labels[i]}</div>
-        <div class="weather-icon">${ICON[code]||'?'}</div>
-        <div class="weather-temp">${temp}&deg;C</div>
-        <div class="weather-desc">${WMO[code]||'-'}</div>
-        <div class="weather-desc">${rain}% - ${wind}km/h</div>
+        <div class="weather-icon">${ICON[code]||'🌡️'}</div>
+        <div class="weather-temp">${temp}°C</div>
+        <div class="weather-desc">${WMO[code]||'—'}</div>
+        <div class="weather-desc">${rain}% · ${wind}km/h</div>
       </div>`;
     }).join('');
     status.innerHTML='<span style="color:var(--neon-green)">●</span> Live · Open-Meteo · Henley 51.5°N 0.9°W · updates hourly';
