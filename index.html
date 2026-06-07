@@ -4,329 +4,602 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thames Path Ultra — Andy's Race Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Special+Elite&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{
-  --neon-purple:#B44FFF;--neon-blue:#00F5FF;--neon-pink:#FF2D9B;--neon-green:#39FF14;--neon-yellow:#FFE500;
-  --dim-purple:#7B2FBE;--dim-blue:#0099AA;
-  --bg:#0A000F;--surface:#100018;--surface2:#1A0028;--surface3:#220035;
-  --grid-line:rgba(180,79,255,0.12);--border-purple:rgba(180,79,255,0.4);
-  --border-blue:rgba(0,245,255,0.4);--border-pink:rgba(255,45,155,0.3);
-  --text:#F0E6FF;--text-mid:#B08FD0;--text-dim:#6B4F88;
-  --font-display:'Orbitron',monospace;--font-body:'Rajdhani',sans-serif;
+  --cream:#F2ECD8;--cream2:#E8DFC4;--cream3:#DDD3B0;
+  --ochre:#C8882A;--ochre2:#A86E18;--ochre3:#7A4F0A;
+  --red:#B83220;--red2:#8C2216;--red-faded:#C8532A;
+  --olive:#5C6B2E;--olive2:#3D4820;--olive-faded:#7A8540;
+  --navy:#1E2D4A;--navy2:#0F1C30;--navy-faded:#2E4060;
+  --slate:#4A5568;--slate2:#2D3748;
+  --paper:#EDE5CC;--paper2:#E2D8BA;--paper3:#D4C898;
+  --ink:#2C2010;--ink2:#3D2E18;--ink3:#5C4A28;
+  --worn:#8B7355;--worn2:#6B5535;--worn3:#4A3820;
+  --bg:var(--paper);
+  --font-display:'Bebas Neue',sans-serif;
+  --font-serif:'DM Serif Display',serif;
+  --font-body:'Special Elite',cursive;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;min-height:100vh;overflow-x:hidden}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+}
 
-body::before{content:'';position:fixed;inset:0;
-  background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
-  pointer-events:none;z-index:0}
+/* paper grain texture */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  opacity:.6;
+}
 
-.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2rem 1.5rem 4rem}
+/* aged horizontal lines like old paper */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(139,115,85,0.06) 28px,rgba(139,115,85,0.06) 29px);
+}
 
-.hero{text-align:center;padding:1.5rem 0 1.25rem;border-bottom:1px solid var(--border-purple);margin-bottom:1.5rem}
-.hero-eyebrow{font-family:var(--font-display);font-size:9px;color:var(--neon-blue);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.5rem}
-.hero-title{font-family:var(--font-display);font-size:clamp(1.6rem,5vw,3rem);font-weight:900;color:var(--text);line-height:1.1;text-transform:uppercase}
-.hero-title em{color:var(--neon-purple);font-style:normal}
-.hero-sub{font-family:var(--font-body);font-size:13px;color:var(--text-mid);margin-top:.4rem;letter-spacing:.08em}
-.hero-meta{display:flex;justify-content:center;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem;font-family:var(--font-display);font-size:9px;color:var(--text-dim);letter-spacing:.1em}
-.hero-meta b{color:var(--neon-blue);font-weight:400}
+.page{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:2rem 1.5rem 5rem}
 
-.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--neon-green);margin-right:4px;animation:blink 1s step-end infinite;vertical-align:middle}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+/* ═══════════════════════════════ HERO ═══════════════════════════════ */
+.hero{
+  text-align:center;
+  padding:2.5rem 1rem 2rem;
+  margin-bottom:2rem;
+  border-bottom:3px solid var(--ochre3);
+  position:relative;
+}
+.hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:6px;
+  background:repeating-linear-gradient(90deg,var(--red) 0,var(--red) 20px,var(--ochre) 20px,var(--ochre) 40px,var(--olive) 40px,var(--olive) 60px,var(--navy) 60px,var(--navy) 80px);
+  opacity:.7;
+}
+.hero-eyebrow{
+  font-family:var(--font-display);font-size:13px;color:var(--ochre2);
+  letter-spacing:.4em;text-transform:uppercase;margin-bottom:.75rem;
+  margin-top:.5rem;
+}
+.hero-title{
+  font-family:var(--font-display);
+  font-size:clamp(3rem,9vw,6rem);
+  color:var(--ink);
+  line-height:.95;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.hero-title em{color:var(--red);font-style:normal}
+.hero-dist{
+  font-family:var(--font-serif);
+  font-size:clamp(1rem,2.5vw,1.5rem);
+  color:var(--ochre2);
+  font-style:italic;
+  margin:.5rem 0 .25rem;
+}
+.hero-sub{
+  font-family:var(--font-body);
+  font-size:12px;color:var(--worn);
+  letter-spacing:.06em;margin-top:.25rem;
+}
+.hero-meta{
+  display:flex;justify-content:center;align-items:center;
+  gap:1.5rem;flex-wrap:wrap;margin-top:1rem;
+  font-family:var(--font-body);font-size:11px;color:var(--worn);
+  letter-spacing:.04em;
+}
+.hero-meta b{color:var(--navy);font-weight:400;font-family:var(--font-display);font-size:13px;letter-spacing:.05em}
 
-.cd-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border-purple);border:1px solid var(--border-purple);margin-bottom:1.5rem;overflow:hidden}
-.cd-cell{background:var(--surface);padding:1.25rem .75rem;text-align:center}
-.cd-num{font-family:var(--font-display);font-size:clamp(2rem,6vw,3.5rem);font-weight:700;color:var(--neon-purple);line-height:1;font-variant-numeric:tabular-nums}
-.cd-label{font-family:var(--font-display);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.15em;margin-top:5px}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--olive);margin-right:5px;animation:blink 1.2s step-end infinite;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-.prog-wrap{margin-bottom:1.5rem}
-.prog-labels{display:flex;justify-content:space-between;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.08em;margin-bottom:6px}
-.prog-pct{color:var(--neon-purple)}
-.prog-track{height:6px;background:var(--surface2);border:1px solid var(--border-purple);overflow:hidden;position:relative}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--dim-purple),var(--neon-purple),var(--neon-blue));transition:width 1s ease;position:relative}
-.prog-fill::after{content:'';position:absolute;right:-1px;top:-3px;width:2px;height:12px;background:var(--neon-blue)}
+/* ═══════════════════════════════ COUNTDOWN ═══════════════════════════════ */
+.cd-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;margin-bottom:2rem;
+  border:3px solid var(--ink);
+  background:var(--ink);
+  overflow:hidden;
+}
+.cd-cell{
+  background:var(--cream);
+  padding:1.5rem .75rem;
+  text-align:center;
+  border-right:2px solid var(--ink);
+  position:relative;
+}
+.cd-cell:last-child{border-right:none}
+.cd-cell::after{
+  content:'';position:absolute;inset:4px;
+  border:1px solid rgba(139,115,85,0.3);
+  pointer-events:none;
+}
+.cd-num{
+  font-family:var(--font-display);
+  font-size:clamp(2.5rem,7vw,4.5rem);
+  color:var(--red);
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.02em;
+}
+.cd-label{
+  font-family:var(--font-body);
+  font-size:10px;color:var(--worn);
+  text-transform:uppercase;letter-spacing:.18em;margin-top:4px;
+}
 
-.sec-head{font-family:var(--font-display);font-size:9px;color:var(--neon-blue);letter-spacing:.2em;text-transform:uppercase;margin:2rem 0 .75rem;display:flex;align-items:center;gap:12px}
-.sec-head::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border-blue),transparent)}
+/* ═══════════════════════════════ PROGRESS ═══════════════════════════════ */
+.prog-wrap{margin-bottom:2rem}
+.prog-labels{
+  display:flex;justify-content:space-between;
+  font-family:var(--font-body);font-size:10px;color:var(--worn2);
+  letter-spacing:.05em;margin-bottom:6px;
+}
+.prog-pct{color:var(--red);font-family:var(--font-display);font-size:13px;letter-spacing:.05em}
+.prog-track{
+  height:12px;background:var(--cream3);
+  border:2px solid var(--ink2);
+  overflow:hidden;position:relative;
+}
+.prog-fill{
+  height:100%;
+  background:repeating-linear-gradient(
+    45deg,
+    var(--red) 0,var(--red) 8px,
+    var(--ochre) 8px,var(--ochre) 16px
+  );
+  transition:width 1s ease;
+  opacity:.85;
+}
 
+/* ═══════════════════════════════ SECTION HEAD ═══════════════════════════════ */
+.sec-head{
+  font-family:var(--font-display);font-size:18px;color:var(--ink);
+  letter-spacing:.12em;text-transform:uppercase;
+  margin:2.5rem 0 1rem;
+  padding-bottom:.4rem;
+  border-bottom:2px solid var(--ink);
+  display:flex;align-items:baseline;gap:12px;
+  position:relative;
+}
+.sec-head::after{
+  content:'';position:absolute;bottom:-5px;left:0;right:0;height:1px;
+  background:var(--ochre);opacity:.5;
+}
+.sec-stamp{
+  font-family:var(--font-serif);font-size:13px;
+  color:var(--ochre2);font-style:italic;font-weight:400;
+  margin-left:auto;letter-spacing:0;
+}
+
+/* ═══════════════════════════════ CARDS ═══════════════════════════════ */
+.card{
+  background:var(--cream);
+  border:2px solid var(--ink2);
+  padding:1.25rem;
+  position:relative;
+}
+/* worn corner fold effect */
+.card::after{
+  content:'';position:absolute;bottom:0;right:0;
+  width:14px;height:14px;
+  background:linear-gradient(135deg,transparent 50%,var(--cream3) 50%);
+  border-left:1px solid var(--worn);
+  border-top:1px solid var(--worn);
+}
+.card-red{border-color:var(--red2);background:rgba(184,50,32,0.04)}
+.card-olive{border-color:var(--olive2);background:rgba(92,107,46,0.04)}
+.card-navy{border-color:var(--navy2);background:rgba(30,45,74,0.04)}
+
+.card-label{
+  font-family:var(--font-body);font-size:9px;color:var(--worn);
+  text-transform:uppercase;letter-spacing:.18em;margin-bottom:.6rem;
+}
+.card-value{
+  font-family:var(--font-display);font-size:2.2rem;
+  color:var(--ink);line-height:1;letter-spacing:.02em;
+}
+.cv-red{color:var(--red)}.cv-olive{color:var(--olive)}.cv-navy{color:var(--navy)}.cv-ochre{color:var(--ochre2)}
+.card-sub{font-family:var(--font-body);font-size:10px;color:var(--worn);margin-top:5px;letter-spacing:.02em}
+
+/* ═══════════════════════════════ FULL WIDTH BANDS ═══════════════════════════════ */
+.band{
+  background:var(--ink);
+  color:var(--cream);
+  padding:1.5rem;
+  margin-bottom:1rem;
+  position:relative;
+}
+.band::before{
+  content:'';position:absolute;top:3px;left:3px;right:3px;bottom:3px;
+  border:1px solid rgba(242,236,216,0.15);pointer-events:none;
+}
+.band-label{font-family:var(--font-body);font-size:9px;color:var(--ochre);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.6rem}
+.band-value{font-family:var(--font-display);font-size:1.6rem;color:var(--cream);letter-spacing:.05em}
+.band-sub{font-family:var(--font-body);font-size:10px;color:rgba(242,236,216,0.6);margin-top:3px}
+
+.band-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:rgba(242,236,216,0.1)}
+.band-cell{padding:1.25rem 1.5rem;background:var(--ink)}
+
+/* ═══════════════════════════════ GRIDS ═══════════════════════════════ */
 .g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-bottom:1rem}
-.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1rem}
-.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.75rem;margin-bottom:1rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.g-full{width:100%;margin-bottom:1rem}
 
-.card{background:var(--surface);border:1px solid var(--border-purple);padding:1.125rem;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--neon-purple),var(--neon-blue))}
-.card-blue{border-color:var(--border-blue)}
-.card-blue::before{background:linear-gradient(90deg,var(--neon-blue),var(--neon-green))}
-.card-pink{border-color:var(--border-pink)}
-.card-pink::before{background:linear-gradient(90deg,var(--neon-pink),var(--neon-purple))}
-
-.card-label{font-family:var(--font-display);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.15em;margin-bottom:.6rem}
-.card-value{font-family:var(--font-display);font-size:1.9rem;font-weight:700;color:var(--neon-purple);line-height:1}
-.cv-blue{color:var(--neon-blue)}.cv-pink{color:var(--neon-pink)}.cv-green{color:var(--neon-green)}
-.card-sub{font-family:var(--font-body);font-size:11px;color:var(--text-mid);margin-top:4px;letter-spacing:.03em}
-
+/* ═══════════════════════════════ STAT LIST ═══════════════════════════════ */
 .stat-list{list-style:none}
-.stat-list li{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--grid-line);font-size:12px}
+.stat-list li{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:7px 0;border-bottom:1px solid var(--cream3);font-size:12px;
+}
 .stat-list li:last-child{border-bottom:none}
-.stat-list .k{font-family:var(--font-body);color:var(--text-mid);letter-spacing:.02em}
-.stat-list .v{font-family:var(--font-display);color:var(--text);font-size:11px}
-.sv-purple{color:var(--neon-purple)}.sv-blue{color:var(--neon-blue)}.sv-pink{color:var(--neon-pink)}.sv-green{color:var(--neon-green)}
+.stat-list .k{font-family:var(--font-body);color:var(--worn2);letter-spacing:.02em}
+.stat-list .v{font-family:var(--font-display);color:var(--ink);font-size:13px;letter-spacing:.03em}
+.sv-red{color:var(--red)}.sv-olive{color:var(--olive)}.sv-navy{color:var(--navy)}.sv-ochre{color:var(--ochre2)}
 
-.run-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--grid-line)}
+/* ═══════════════════════════════ RUN LOG ═══════════════════════════════ */
+.run-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--cream3)}
 .run-row:last-child{border-bottom:none}
-.run-date{font-family:var(--font-display);font-size:8px;color:var(--text-dim);width:48px;flex-shrink:0}
-.run-dist{font-family:var(--font-display);font-size:11px;color:var(--neon-purple);width:52px;flex-shrink:0;font-weight:700}
-.run-bar-wrap{flex:1;height:4px;background:var(--surface3);border:1px solid rgba(180,79,255,0.2)}
-.run-bar{height:100%;background:linear-gradient(90deg,var(--dim-purple),var(--neon-purple))}
-.run-hr{font-family:var(--font-display);font-size:9px;width:52px;text-align:right;flex-shrink:0}
-.hr-good{color:var(--neon-green)}.hr-ok{color:var(--neon-blue)}.hr-high{color:var(--neon-pink)}
-.pb-badge{font-family:var(--font-display);font-size:7px;color:var(--neon-green);border:1px solid rgba(57,255,20,.4);padding:1px 4px;margin-left:4px;vertical-align:middle}
+.run-date{font-family:var(--font-body);font-size:9px;color:var(--worn);width:44px;flex-shrink:0;letter-spacing:.03em}
+.run-dist{font-family:var(--font-display);font-size:13px;color:var(--red);width:56px;flex-shrink:0;letter-spacing:.02em}
+.run-bar-wrap{flex:1;height:6px;background:var(--cream3);border:1px solid var(--cream3)}
+.run-bar{height:100%;background:var(--ochre)}
+.run-hr{font-family:var(--font-body);font-size:9px;width:52px;text-align:right;flex-shrink:0;letter-spacing:.02em}
+.hr-good{color:var(--olive)}.hr-ok{color:var(--navy)}.hr-high{color:var(--red)}
+.pb-badge{
+  font-family:var(--font-display);font-size:8px;color:var(--cream);
+  background:var(--red);padding:1px 5px;margin-left:4px;vertical-align:middle;
+  letter-spacing:.06em;
+}
 
-.fun-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.75rem;margin-bottom:1rem}
-.fun-stat{background:var(--surface2);border:1px solid var(--grid-line);padding:.875rem;text-align:center}
-.fun-num{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--neon-blue);line-height:1}
-.fun-label{font-family:var(--font-body);font-size:10px;color:var(--text-dim);margin-top:3px;letter-spacing:.04em}
-
-.tl-item{display:grid;grid-template-columns:60px 12px 1fr;gap:0 12px;padding:8px 0;align-items:start;font-size:12px}
-.tl-date{font-family:var(--font-display);font-size:8px;color:var(--text-dim);padding-top:2px;text-align:right;letter-spacing:.04em}
+/* ═══════════════════════════════ TIMELINE ═══════════════════════════════ */
+.tl-item{display:grid;grid-template-columns:56px 14px 1fr;gap:0 12px;padding:8px 0;align-items:start}
+.tl-date{font-family:var(--font-body);font-size:9px;color:var(--worn);padding-top:2px;text-align:right;letter-spacing:.03em}
 .tl-line{display:flex;flex-direction:column;align-items:center;padding-top:3px}
-.tl-dot{width:8px;height:8px;border-radius:0;flex-shrink:0}
-.tl-conn{width:1px;flex:1;background:var(--border-purple);min-height:22px;margin-top:3px}
+.tl-dot{width:10px;height:10px;flex-shrink:0;border:2px solid var(--ink)}
+.tl-conn{width:2px;flex:1;background:var(--cream3);min-height:20px;margin-top:3px}
 .tl-item:last-child .tl-conn{display:none}
-.tl-name{color:var(--text);font-weight:400;line-height:1.4;font-family:var(--font-body);font-size:13px}
-.tl-desc{color:var(--text-mid);font-size:11px;margin-top:1px;font-family:var(--font-body)}
+.tl-name{font-family:var(--font-body);color:var(--ink);font-size:12px;line-height:1.4}
+.tl-desc{font-family:var(--font-body);color:var(--worn);font-size:10px;margin-top:1px;letter-spacing:.02em}
+.phase-tag{
+  display:inline-block;font-family:var(--font-display);font-size:8px;
+  padding:1px 5px;margin-left:5px;vertical-align:middle;letter-spacing:.08em;
+}
+.p-base{background:var(--olive);color:var(--cream)}
+.p-build{background:var(--navy);color:var(--cream)}
+.p-peak{background:var(--ochre2);color:var(--cream)}
+.p-taper{background:var(--worn2);color:var(--cream)}
+.p-race{background:var(--red);color:var(--cream)}
+.p-away{background:var(--slate);color:var(--cream)}
 
-.phase-tag{display:inline-block;font-family:var(--font-display);font-size:7px;padding:1px 6px;margin-left:5px;text-transform:uppercase;letter-spacing:.08em;vertical-align:middle}
-.p-base{background:rgba(57,255,20,.1);color:var(--neon-green);border:1px solid rgba(57,255,20,.3)}
-.p-build{background:rgba(0,245,255,.1);color:var(--neon-blue);border:1px solid var(--border-blue)}
-.p-peak{background:rgba(255,229,0,.1);color:var(--neon-yellow);border:1px solid rgba(255,229,0,.3)}
-.p-taper{background:rgba(180,79,255,.1);color:var(--neon-purple);border:1px solid var(--border-purple)}
-.p-race{background:rgba(255,45,155,.1);color:var(--neon-pink);border:1px solid var(--border-pink)}
-.p-away{background:rgba(255,45,155,.08);color:var(--neon-pink);border:1px solid var(--border-pink)}
+/* ═══════════════════════════════ ACTIVITY PILLS ═══════════════════════════════ */
+.act-pill{
+  display:inline-block;font-family:var(--font-display);font-size:9px;
+  padding:3px 8px;margin:3px 3px 0 0;letter-spacing:.06em;
+  border:1px solid var(--ink2);background:var(--cream2);color:var(--ink);
+}
 
-.act-pill{display:inline-block;font-family:var(--font-display);font-size:8px;padding:2px 8px;margin:3px 3px 0 0;text-transform:uppercase;letter-spacing:.06em}
-.ap-run{background:rgba(180,79,255,.15);color:var(--neon-purple);border:1px solid var(--border-purple)}
-.ap-swim{background:rgba(0,245,255,.1);color:var(--neon-blue);border:1px solid var(--border-blue)}
-.ap-gym{background:rgba(57,255,20,.1);color:var(--neon-green);border:1px solid rgba(57,255,20,.3)}
-.ap-hiit{background:rgba(255,45,155,.1);color:var(--neon-pink);border:1px solid var(--border-pink)}
-.ap-tennis{background:rgba(255,229,0,.1);color:var(--neon-yellow);border:1px solid rgba(255,229,0,.3)}
-.ap-bike{background:rgba(0,245,255,.08);color:var(--neon-blue);border:1px solid rgba(0,245,255,.2)}
-
-.weather-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin-top:.5rem}
-.weather-cell{background:var(--surface2);border:1px solid var(--grid-line);padding:8px 6px;text-align:center}
-.weather-time{font-family:var(--font-display);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+/* ═══════════════════════════════ WEATHER ═══════════════════════════════ */
+.weather-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:4px;margin-top:.75rem}
+.weather-cell{background:var(--cream2);border:1px solid var(--cream3);padding:8px 6px;text-align:center}
+.weather-time{font-family:var(--font-display);font-size:8px;color:var(--worn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
 .weather-icon{font-size:18px;margin-bottom:3px}
-.weather-temp{font-family:var(--font-display);font-size:13px;color:var(--text);font-weight:500}
-.weather-desc{font-size:9px;color:var(--text-dim);margin-top:2px;font-family:var(--font-body)}
+.weather-temp{font-family:var(--font-display);font-size:14px;color:var(--ink);letter-spacing:.02em}
+.weather-desc{font-size:9px;color:var(--worn);margin-top:2px;font-family:var(--font-body)}
 
-.motivation-box{border:1px solid var(--border-purple);border-left:3px solid var(--neon-purple);padding:1.125rem 1.25rem;margin-top:1rem;background:var(--surface)}
-.motivation-text{font-family:var(--font-body);font-size:15px;color:var(--text-mid);line-height:1.6;font-style:italic}
-.motivation-text strong{font-style:normal;color:var(--neon-purple);font-family:var(--font-display);font-size:12px}
+/* ═══════════════════════════════ MEDAL / RIBBON ═══════════════════════════════ */
+.ribbon{
+  background:var(--red);color:var(--cream);
+  font-family:var(--font-display);font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;text-align:center;
+  padding:.4rem 1rem;margin-bottom:.5rem;
+  clip-path:polygon(0 0,100% 0,calc(100% - 12px) 50%,100% 100%,0 100%,12px 50%);
+}
 
-footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-purple);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.08em}
+/* ═══════════════════════════════ MOTIVATION ═══════════════════════════════ */
+.motivation-box{
+  border:2px solid var(--ink);
+  border-left:8px solid var(--red);
+  padding:1.5rem;
+  margin-top:1.5rem;
+  background:var(--cream);
+  position:relative;
+}
+.motivation-text{
+  font-family:var(--font-serif);font-size:1.2rem;
+  color:var(--ink2);line-height:1.6;font-style:italic;
+}
+.motivation-text strong{
+  font-style:normal;color:var(--red);
+  font-family:var(--font-display);font-size:1rem;letter-spacing:.04em;
+}
+
+/* ═══════════════════════════════ STAMPS / MARKS ═══════════════════════════════ */
+.stamp{
+  display:inline-block;
+  border:3px solid currentColor;
+  padding:2px 8px;
+  font-family:var(--font-display);
+  font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;
+  transform:rotate(-1.5deg);
+  opacity:.7;
+  vertical-align:middle;
+  margin-left:8px;
+}
+.stamp-red{color:var(--red)}
+.stamp-olive{color:var(--olive)}
+
+/* ═══════════════════════════════ FOOTER ═══════════════════════════════ */
+footer{
+  margin-top:3rem;padding-top:1.5rem;
+  border-top:3px solid var(--ink);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  font-family:var(--font-body);font-size:10px;color:var(--worn);letter-spacing:.04em;
+}
 
 @media(max-width:600px){
   .cd-strip{grid-template-columns:repeat(2,1fr)}
-  .g4{grid-template-columns:repeat(2,1fr)}
-  .fun-grid{grid-template-columns:repeat(2,1fr)}
-  .hero-meta{gap:.75rem}
+  .g3{grid-template-columns:1fr}
+  .band-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
 <body>
 <div class="page">
 
+<!-- ══════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════ -->
 <div class="hero">
-  <div class="hero-eyebrow">andy's ultra command centre · 2026</div>
-  <h1 class="hero-title">Thames Path <em>Ultra</em><br>100 Kilometres</h1>
-  <p class="hero-sub">Putney Bridge → Henley-on-Thames · 12 September 2026</p>
+  <div class="hero-eyebrow">Official Athletic Record · London · 2026</div>
+  <h1 class="hero-title">Thames Path <em>Ultra</em></h1>
+  <div class="hero-dist">One Hundred Kilometres</div>
+  <p class="hero-sub">Putney Bridge — Henley-on-Thames · 12 September 2026</p>
   <div class="hero-meta">
     <span><span class="live-dot"></span><span id="live-time">--:--:--</span></span>
-    <span>VO2 max <b id="vo2-live">51</b></span>
-    <span>status <b>Productive</b></span>
-    <span>days to go <b id="days-inline">--</b></span>
-    <span>next refresh <b id="next-refresh">--</b></span>
+    <span>VO2 <b id="vo2-live">51</b></span>
+    <span>Status <b>Productive</b></span>
+    <span>Days remaining <b id="days-inline">--</b></span>
+    <span>Refresh <b id="next-refresh">--</b></span>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════
+     COUNTDOWN
+══════════════════════════════════════════════════════ -->
 <div class="cd-strip">
-  <div class="cd-cell"><div class="cd-num" id="cd-days">--</div><div class="cd-label">days</div></div>
-  <div class="cd-cell"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">hours</div></div>
-  <div class="cd-cell"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">minutes</div></div>
-  <div class="cd-cell"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">seconds</div></div>
+  <div class="cd-cell"><div class="cd-num" id="cd-days">--</div><div class="cd-label">Days</div></div>
+  <div class="cd-cell"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Hours</div></div>
+  <div class="cd-cell"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Minutes</div></div>
+  <div class="cd-cell"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Seconds</div></div>
 </div>
 
+<!-- Progress -->
 <div class="prog-wrap">
   <div class="prog-labels">
-    <span>Training start · 18 May 2026</span>
-    <span class="prog-pct" id="pct-label">0% complete</span>
+    <span>Training commenced · 18 May 2026</span>
+    <span class="prog-pct" id="pct-label">0%</span>
     <span>Race day · 12 Sep 2026</span>
   </div>
   <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
 </div>
 
-<div class="sec-head" id="g-vitals-date">fitness vitals · 7 Jun 2026</div>
-<div class="g4">
-  <div class="card">
-    <div class="card-label">VO2 max</div>
-    <div class="card-value" id="g-vo2-value">51</div>
-    <div class="card-sub" id="g-vo2-sub">↑ from 50 · trending up</div>
+<!-- ══════════════════════════════════════════════════════
+     FITNESS VITALS — full width band
+══════════════════════════════════════════════════════ -->
+<div class="sec-head" id="g-vitals-date">Fitness Vitals · 7 Jun 2026<span class="sec-stamp">Official Record</span></div>
+
+<!-- Row 1: 4 cards across full width -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem">
+  <div class="card card-red">
+    <div class="card-label">VO2 Max</div>
+    <div class="card-value cv-red" id="g-vo2-value">51</div>
+    <div class="card-sub">up from 50 · trending upward</div>
   </div>
-  <div class="card card-blue">
-    <div class="card-label">Load ratio</div>
-    <div class="card-value cv-blue" id="g-load-ratio">1.1</div>
+  <div class="card card-navy">
+    <div class="card-label">Load Ratio</div>
+    <div class="card-value cv-navy" id="g-load-ratio">1.1</div>
     <div class="card-sub" id="g-load-sub">optimal · building nicely</div>
   </div>
-  <div class="card card-pink">
-    <div class="card-label">HRV status</div>
-    <div class="card-value cv-pink" id="g-hrv-status" style="font-size:1.1rem;padding-top:6px">Balanced</div>
+  <div class="card card-olive">
+    <div class="card-label">HRV Status</div>
+    <div class="card-value cv-olive" style="font-size:1.4rem;padding-top:4px" id="g-hrv-status">Balanced</div>
     <div class="card-sub" id="g-hrv-sub">53 ms weekly avg · last night 61 ms</div>
   </div>
-  <div class="card">
-    <div class="card-label">Longest run ever</div>
-    <div class="card-value cv-green" id="g-longest-run">23<span style="font-size:1rem"> km</span></div>
+  <div class="card card-red">
+    <div class="card-label">Longest Run</div>
+    <div class="card-value cv-red" id="g-longest-run">23 <span style="font-size:1rem">km</span></div>
     <div class="card-sub" id="g-longest-sub">7 Jun · new PB</div>
   </div>
-  <div class="card card-blue">
-    <div class="card-label">Training status</div>
-    <div class="card-value cv-blue" id="g-status-val" style="font-size:1rem;padding-top:8px">Productive</div>
-    <div class="card-sub" id="g-status-sub">fitness trending up</div>
+</div>
+
+<!-- Row 2: 4 cards across full width -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem">
+  <div class="card">
+    <div class="card-label">Training Status</div>
+    <div class="card-value" style="font-size:1.2rem;padding-top:4px" id="g-status-val">Productive</div>
+    <div class="card-sub">fitness trending upward</div>
   </div>
   <div class="card">
-    <div class="card-label">Aerobic balance</div>
-    <div class="card-value cv-pink" id="g-aerobic-val" style="font-size:.9rem;padding-top:8px">Low shortage</div>
+    <div class="card-label">Aerobic Balance</div>
+    <div class="card-value cv-ochre" style="font-size:1.1rem;padding-top:4px" id="g-aerobic-val">Low shortage</div>
     <div class="card-sub" id="g-aerobic-sub">more easy aerobic work needed</div>
   </div>
-  <div class="card card-pink">
-    <div class="card-label">Weekly avg steps</div>
-    <div class="card-value" id="g-steps-val" style="font-size:1.3rem">110k</div>
+  <div class="card card-olive">
+    <div class="card-label">Weekly Steps Avg</div>
+    <div class="card-value cv-olive" id="g-steps-val">110k</div>
     <div class="card-sub" id="g-steps-sub">~93 km/week on foot</div>
   </div>
-  <div class="card card-blue">
-    <div class="card-label">Days to race</div>
-    <div class="card-value cv-blue" id="days-card">--</div>
-    <div class="card-sub">12 September 2026</div>
-  </div>
-  <div class="card">
+  <div class="card card-navy">
     <div class="card-label">AM Readiness</div>
-    <div class="card-value cv-green" id="g-readiness-val">73</div>
+    <div class="card-value cv-navy" id="g-readiness-val">73</div>
     <div class="card-sub" id="g-readiness-sub">39 hrs recovery needed post-run</div>
   </div>
 </div>
 
-<div class="sec-head">recent runs · may–jun 2026</div>
+<!-- ══════════════════════════════════════════════════════
+     RECENT RUNS + VO2 TREND
+══════════════════════════════════════════════════════ -->
+<div class="sec-head">Recent Runs · May–Jun 2026<span class="sec-stamp">Activity Log</span></div>
 <div class="g2">
   <div class="card">
     <div class="card-label">Distance log</div>
     <div id="run-list"></div>
   </div>
-  <div class="card card-blue">
-    <div class="card-label">VO2 max trend · Mar → Jun</div>
-    <div style="position:relative;width:100%;height:180px">
-      <canvas id="vo2Chart" role="img" aria-label="VO2 max trend chart from March to June 2026 showing improvement from 48 to 51">VO2 max rose from 48 in late March to 51 in June 2026.</canvas>
+  <div class="card card-navy">
+    <div class="card-label">VO2 Max Trend · Mar to Jun</div>
+    <div style="position:relative;width:100%;height:200px">
+      <canvas id="vo2Chart" role="img" aria-label="VO2 max trend chart from March to June 2026">VO2 max rose from 48 in late March to 51 in June 2026.</canvas>
     </div>
   </div>
 </div>
 
-<div class="sec-head">race predictions</div>
-<div class="g2">
+<!-- ══════════════════════════════════════════════════════
+     WEEKLY STEPS — full width
+══════════════════════════════════════════════════════ -->
+<div class="sec-head">Weekly Step Count<span class="sec-stamp">8 Weeks</span></div>
+<div class="card g-full">
+  <div class="card-label">Steps per week · last 8 weeks</div>
+  <div style="position:relative;width:100%;height:180px">
+    <canvas id="stepsChart" role="img" aria-label="Weekly step count bar chart showing 8 weeks of data">Weekly steps over 8 weeks.</canvas>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     RACE PREDICTIONS — full width dark band
+══════════════════════════════════════════════════════ -->
+<div class="sec-head">Race Predictions<span class="sec-stamp">Garmin Estimate</span></div>
+<div class="band g-full">
+  <div class="band-grid">
+    <div class="band-cell">
+      <div class="band-label">5 km</div>
+      <div class="band-value" id="g-pred-5k">23:24</div>
+    </div>
+    <div class="band-cell">
+      <div class="band-label">10 km</div>
+      <div class="band-value" id="g-pred-10k">50:56</div>
+    </div>
+    <div class="band-cell">
+      <div class="band-label">Half Marathon</div>
+      <div class="band-value" id="g-pred-hm">1:56:01</div>
+    </div>
+    <div class="band-cell">
+      <div class="band-label">Marathon</div>
+      <div class="band-value" id="g-pred-marathon">4:18:06</div>
+    </div>
+    <div class="band-cell" style="border-left:2px solid var(--red);background:rgba(184,50,32,0.12)">
+      <div class="band-label" style="color:var(--red-faded)">Ultra 100 km</div>
+      <div class="band-value" style="color:var(--cream);font-size:2rem">~20–24 hrs</div>
+      <div class="band-sub">walk/jog strategy · improves as training builds</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     KEY STATS — full width
+══════════════════════════════════════════════════════ -->
+<div class="sec-head">Key Statistics<span class="sec-stamp">Current</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem">
   <div class="card">
-    <div class="card-label">Garmin predicted finish times</div>
-    <ul class="stat-list">
-      <li><span class="k">5 km</span><span class="v sv-blue" id="g-pred-5k">23:24</span></li>
-      <li><span class="k">10 km</span><span class="v sv-blue" id="g-pred-10k">50:56</span></li>
-      <li><span class="k">Half marathon</span><span class="v sv-purple" id="g-pred-hm">1:56:01</span></li>
-      <li><span class="k">Marathon</span><span class="v sv-purple" id="g-pred-marathon">4:18:06</span></li>
-      <li><span class="k" style="color:var(--text)">Ultra 100 km <span style="font-size:9px;color:var(--text-dim)">(estimated)</span></span><span class="v sv-pink" style="font-size:14px">~20–24 hrs</span></li>
-    </ul>
-    <div style="margin-top:.75rem;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.06em">Ultra estimate based on walk/jog strategy · improves as training builds</div>
+    <div class="card-label">Runs this week</div>
+    <div class="card-value cv-red" style="font-size:1.5rem" id="g-ks-runs-week">3 sessions</div>
   </div>
-  <div class="card card-pink">
-    <div class="card-label">Weekly steps · last 8 weeks</div>
-    <div style="position:relative;width:100%;height:180px">
-      <canvas id="stepsChart" role="img" aria-label="Weekly step count bar chart showing 97k to 130k steps over 8 weeks">Weekly steps ranged from 96,953 to 130,102 over the last 8 weeks.</canvas>
-    </div>
+  <div class="card">
+    <div class="card-label">Distance this week</div>
+    <div class="card-value cv-navy" style="font-size:1.5rem" id="g-ks-run-dist">35.3 km</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Today's avg HR</div>
+    <div class="card-value cv-olive" style="font-size:1.5rem" id="g-ks-today-hr">143 bpm</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Total runs since Apr</div>
+    <div class="card-value" style="font-size:1.5rem" id="g-ks-total-runs">19 sessions</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Longest run ever</div>
+    <div class="card-value cv-red" style="font-size:1.3rem" id="g-ks-longest">23.0 km · 7 Jun</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Predicted marathon</div>
+    <div class="card-value cv-navy" style="font-size:1.3rem" id="g-ks-marathon">4:18:06</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Sleep score</div>
+    <div class="card-value" style="font-size:1.3rem"><span id="g-ks-sleep" class="sv-olive">85/100 · Good</span></div>
+  </div>
+  <div class="card card-red">
+    <div class="card-label">Switzerland departs</div>
+    <div class="card-value cv-red" style="font-size:1.3rem" id="g-ks-switz">20 days</div>
   </div>
 </div>
 
-<div class="sec-head">fun stats</div>
-<div class="fun-grid">
-  <div class="fun-stat"><div class="fun-num" id="fun-days">96</div><div class="fun-label">days to race</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-purple)">19</div><div class="fun-label">runs logged</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-pink)" id="g-avg-bpm">154</div><div class="fun-label">avg run bpm (↓ improving)</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-green)">51</div><div class="fun-label">VO2 max · up from 50</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-blue)">2,500</div><div class="fun-label">cal burned today</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-purple)">7</div><div class="fun-label">gym sessions</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-blue)">2</div><div class="fun-label">swims logged</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-yellow)">2</div><div class="fun-label">tennis sessions</div></div>
-</div>
-
-<div class="sec-head">activity mix · last 5 weeks</div>
-<div class="card" style="margin-bottom:1rem">
-  <div class="card-label">All activity types</div>
-  <div style="margin-top:.5rem">
-    <span class="act-pill ap-run">running × 19</span>
-    <span class="act-pill ap-gym">strength × 7</span>
-    <span class="act-pill ap-hiit">hiit × 3</span>
-    <span class="act-pill ap-swim">swimming × 2</span>
-    <span class="act-pill ap-tennis">tennis × 2</span>
-    <span class="act-pill ap-bike">cycling × 4</span>
-    <span class="act-pill ap-bike">e-bike × 4</span>
-    <span class="act-pill ap-gym">hiking × 1</span>
-  </div>
-  <div style="margin-top:.875rem;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.06em">73 total activities since 1 May · averaging 3.5 per day including walks</div>
-</div>
-
-<div class="sec-head">training plan · key milestones</div>
+<!-- ══════════════════════════════════════════════════════
+     TRAINING PLAN + ACTIVITY MIX
+══════════════════════════════════════════════════════ -->
+<div class="sec-head">Training Plan<span class="sec-stamp">17 Weeks</span></div>
 <div class="g2">
   <div class="card">
     <div class="card-label">Phase timeline</div>
-    <div>
-      <div class="tl-item"><div class="tl-date">18 May</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-green)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Training begins <span class="phase-tag p-base">base</span></div><div class="tl-desc">20 km long day · back-to-backs start</div></div></div>
-      <div class="tl-item"><div class="tl-date">15 Jun</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-blue)"></div><div class="tl-conn"></div></div><div><div class="tl-name">30 km milestone <span class="phase-tag p-build">build</span></div><div class="tl-desc">first ultra-distance long day</div></div></div>
-      <div class="tl-item"><div class="tl-date">27 Jun</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-pink)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Switzerland cycling <span class="phase-tag p-away">away</span></div><div class="tl-desc">5 days alpine · Geneva to Zurich</div></div></div>
-      <div class="tl-item"><div class="tl-date">16 Jul</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-pink)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Tomorrowland <span class="phase-tag p-away">festival</span></div><div class="tl-desc">Belgium · time on feet counts</div></div></div>
-      <div class="tl-item"><div class="tl-date">25 Jul</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-pink)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Australia travel <span class="phase-tag p-away">away</span></div><div class="tl-desc">maintenance runs · back 9 Aug</div></div></div>
-      <div class="tl-item"><div class="tl-date">15 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-yellow)"></div><div class="tl-conn"></div></div><div><div class="tl-name">40 km long day <span class="phase-tag p-peak">peak</span></div><div class="tl-desc">biggest single session of the plan</div></div></div>
-      <div class="tl-item"><div class="tl-date">22 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-yellow)"></div><div class="tl-conn"></div></div><div><div class="tl-name">50 km dress rehearsal <span class="phase-tag p-peak">peak</span></div><div class="tl-desc">full kit · race nutrition · Thames Path</div></div></div>
-      <div class="tl-item"><div class="tl-date">24 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-purple)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Taper begins <span class="phase-tag p-taper">taper</span></div><div class="tl-desc">volume drops · legs freshen up</div></div></div>
-      <div class="tl-item"><div class="tl-date">12 Sep</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-pink);box-shadow:0 0 8px var(--neon-pink)"></div><div class="tl-conn"></div></div><div><div class="tl-name" style="color:var(--neon-pink);font-weight:500">Race day <span class="phase-tag p-race">100 km</span></div><div class="tl-desc">Putney Bridge · ~6:00 AM start</div></div></div>
+    <div class="tl-item"><div class="tl-date">18 May</div><div class="tl-line"><div class="tl-dot" style="background:var(--olive)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Training begins <span class="phase-tag p-base">Base</span></div><div class="tl-desc">20 km long day · back-to-backs start</div></div></div>
+    <div class="tl-item"><div class="tl-date">15 Jun</div><div class="tl-line"><div class="tl-dot" style="background:var(--navy)"></div><div class="tl-conn"></div></div><div><div class="tl-name">30 km milestone <span class="phase-tag p-build">Build</span></div><div class="tl-desc">first ultra-distance long day</div></div></div>
+    <div class="tl-item"><div class="tl-date">27 Jun</div><div class="tl-line"><div class="tl-dot" style="background:var(--slate)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Switzerland cycling <span class="phase-tag p-away">Away</span></div><div class="tl-desc">5 days alpine · Geneva to Zurich</div></div></div>
+    <div class="tl-item"><div class="tl-date">16 Jul</div><div class="tl-line"><div class="tl-dot" style="background:var(--slate)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Tomorrowland <span class="phase-tag p-away">Away</span></div><div class="tl-desc">Belgium · time on feet counts</div></div></div>
+    <div class="tl-item"><div class="tl-date">25 Jul</div><div class="tl-line"><div class="tl-dot" style="background:var(--slate)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Australia travel <span class="phase-tag p-away">Away</span></div><div class="tl-desc">maintenance runs · back 9 Aug</div></div></div>
+    <div class="tl-item"><div class="tl-date">15 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--ochre2)"></div><div class="tl-conn"></div></div><div><div class="tl-name">40 km long day <span class="phase-tag p-peak">Peak</span></div><div class="tl-desc">biggest single session of the plan</div></div></div>
+    <div class="tl-item"><div class="tl-date">22 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--ochre2)"></div><div class="tl-conn"></div></div><div><div class="tl-name">50 km dress rehearsal <span class="phase-tag p-peak">Peak</span></div><div class="tl-desc">full kit · race nutrition · Thames Path</div></div></div>
+    <div class="tl-item"><div class="tl-date">24 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--worn2)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Taper begins <span class="phase-tag p-taper">Taper</span></div><div class="tl-desc">volume drops · legs freshen up</div></div></div>
+    <div class="tl-item"><div class="tl-date">12 Sep</div><div class="tl-line"><div class="tl-dot" style="background:var(--red)"></div><div class="tl-conn"></div></div><div><div class="tl-name" style="color:var(--red);font-weight:400">Race day <span class="phase-tag p-race">100 km</span></div><div class="tl-desc">Putney Bridge · ~6:00 AM start</div></div></div>
+  </div>
+  <div class="card card-olive">
+    <div class="card-label">Activity mix · last 5 weeks</div>
+    <div style="margin-top:.5rem">
+      <span class="act-pill">Running × 19</span>
+      <span class="act-pill">Strength × 7</span>
+      <span class="act-pill">HIIT × 3</span>
+      <span class="act-pill">Swimming × 2</span>
+      <span class="act-pill">Tennis × 2</span>
+      <span class="act-pill">Cycling × 4</span>
+      <span class="act-pill">E-bike × 3</span>
+      <span class="act-pill">Hiking × 1</span>
+    </div>
+    <div style="margin-top:1.5rem;font-family:var(--font-body);font-size:10px;color:var(--worn2);letter-spacing:.03em;border-top:1px solid var(--cream3);padding-top:1rem">
+      73 total activities since 1 May · averaging 3.5 per day including walks
+    </div>
+    <div style="margin-top:1.5rem">
+      <div class="ribbon">Avg run heart rate</div>
+      <div style="font-family:var(--font-display);font-size:3rem;color:var(--red);text-align:center;line-height:1"><span id="g-avg-bpm">154</span> <span style="font-size:1.2rem">bpm</span></div>
+      <div style="font-family:var(--font-body);font-size:10px;color:var(--worn);text-align:center;margin-top:4px">target: 140–150 bpm on long efforts</div>
     </div>
   </div>
-  <div class="card card-blue">
-    <div class="card-label">Key stats</div>
-    <ul class="stat-list">
-      <li><span class="k">Runs this week</span><span class="v sv-green" id="g-ks-runs-week">3 sessions</span></li>
-      <li><span class="k">Run distance this week</span><span class="v sv-green" id="g-ks-run-dist">35.3 km</span></li>
-      <li><span class="k">Longest run ever</span><span class="v sv-green" id="g-ks-longest">23.0 km · 7 Jun</span></li>
-      <li><span class="k">Today's avg HR</span><span class="v sv-green" id="g-ks-today-hr">143 bpm ✓</span></li>
-      <li><span class="k">Total runs since Apr</span><span class="v sv-purple" id="g-ks-total-runs">19 sessions</span></li>
-      <li><span class="k">Predicted marathon</span><span class="v sv-blue" id="g-ks-marathon">4:18:06</span></li>
-      <li><span class="k">Sleep score (last)</span><span class="v sv-green" id="g-ks-sleep">85/100 · Good</span></li>
-      <li><span class="k">Switzerland departs</span><span class="v sv-pink" id="g-ks-switz">20 days</span></li>
-    </ul>
-  </div>
 </div>
 
-<div class="sec-head">race day forecast · henley-on-thames</div>
-<div class="card card-blue" style="margin-bottom:1rem">
-  <div class="card-label">12 September 2026 · loading live data...</div>
+<!-- ══════════════════════════════════════════════════════
+     WEATHER — full width
+══════════════════════════════════════════════════════ -->
+<div class="sec-head">Race Day Forecast · Henley-on-Thames<span class="sec-stamp">12 Sep 2026</span></div>
+<div class="card g-full">
+  <div class="card-label">12 September 2026 · Open-Meteo live forecast</div>
   <div class="weather-grid" id="weather-grid">
-    <div class="weather-cell"><div class="weather-time">loading</div><div class="weather-icon">⟳</div><div class="weather-temp">--°C</div></div>
+    <div class="weather-cell"><div class="weather-time">Loading</div><div class="weather-icon">⟳</div><div class="weather-temp">--°C</div></div>
   </div>
-  <div id="weather-status" style="margin-top:.75rem;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.06em">Fetching forecast from Open-Meteo...</div>
-  <div style="margin-top:.75rem;padding:8px 10px;background:var(--surface2);border:1px solid var(--grid-line);font-family:var(--font-body);font-size:11px;color:var(--text-mid)">
-    September Thames Valley is typically 12–18°C at dawn rising to 18–24°C by afternoon. Pack a light layer for the start.
+  <div id="weather-status" style="margin-top:.75rem;font-family:var(--font-body);font-size:10px;color:var(--worn);letter-spacing:.03em">Fetching forecast...</div>
+  <div style="margin-top:.75rem;padding:10px 12px;background:var(--cream2);border:1px solid var(--cream3);font-family:var(--font-body);font-size:11px;color:var(--worn2)">
+    September Thames Valley is typically 12–18°C at dawn rising to 18–24°C by afternoon. Pack a light layer for the start — expect to shed it by Richmond.
   </div>
 </div>
 
-<div class="sec-head">today's transmission</div>
+<!-- ══════════════════════════════════════════════════════
+     MOTIVATION
+══════════════════════════════════════════════════════ -->
+<div class="sec-head">Today's Dispatch</div>
 <div class="motivation-box">
   <div class="motivation-text" id="motivation-text">Loading...</div>
 </div>
@@ -341,8 +614,48 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
 <script>
 const RACE=new Date('2026-09-12T06:00:00');
 const TRAIN_START=new Date('2026-05-18T00:00:00');
+let vo2ChartRef=null,stepsChartRef=null;
 
-// --- Run list ---
+const MOTIVATIONS=[
+  "The wall at 70 km is real. But so is the finish line at Henley. <strong>You only stop when you choose to.</strong>",
+  "23 km at 143 bpm. That is your ultra pace. <strong>Remember exactly how that felt.</strong>",
+  "Every step in training is a deposit. <strong>Race day is the withdrawal. Make it count.</strong>",
+  "Walk, jog, shuffle — <strong>forward is the only direction that matters.</strong>",
+  "Switzerland builds the engine. Tomorrowland builds the feet. Australia builds the mind. <strong>Everything counts.</strong>",
+  "Checkpoint to checkpoint. Nothing else. <strong>One marquee at a time.</strong>",
+  "Eat before you are hungry. Drink before you are thirsty. Walk before you are broken. <strong>That is the ultra game.</strong>",
+  "The Thames does not care how fast you are. It just keeps flowing. <strong>So should you.</strong>",
+  "VO2 max 51 and climbing. <strong>The data says you are ready. Trust it.</strong>",
+  "3,000 people start at Putney. Most finish. <strong>So will you.</strong>",
+  "This is a mental event that happens to involve running. <strong>Your mind finishes first.</strong>",
+  "Richmond feels easy. Hampton Court feels fine. Runnymede is where it starts. <strong>Henley is where it ends.</strong>"
+];
+document.getElementById('motivation-text').innerHTML=MOTIVATIONS[Math.floor(Date.now()/(2*60*60*1000))%MOTIVATIONS.length];
+
+function pad(n){return String(n).padStart(2,'0')}
+function tick(){
+  const now=new Date();
+  document.getElementById('live-time').textContent=now.toLocaleTimeString('en-GB');
+  const diff=RACE-now;
+  if(diff>0){
+    const d=Math.floor(diff/86400000);
+    document.getElementById('cd-days').textContent=pad(d);
+    document.getElementById('cd-hours').textContent=pad(Math.floor((diff%86400000)/3600000));
+    document.getElementById('cd-mins').textContent=pad(Math.floor((diff%3600000)/60000));
+    document.getElementById('cd-secs').textContent=pad(Math.floor((diff%60000)/1000));
+    document.getElementById('days-inline').textContent=d;
+  }
+  const tot=RACE-TRAIN_START;
+  const el=now-TRAIN_START;
+  const pct=Math.max(0,Math.min(100,Math.round((el/tot)*100)));
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('pct-label').textContent=pct+'% complete';
+  const twoH=2*60*60*1000;
+  const rem=twoH-(now.getTime()%twoH);
+  document.getElementById('next-refresh').textContent=pad(Math.floor(rem/3600000))+':'+pad(Math.floor((rem%3600000)/60000))+':'+pad(Math.floor((rem%60000)/1000));
+}
+tick();setInterval(tick,1000);
+
 function renderRuns(runs){
   const maxD=Math.max(...runs.map(r=>r.dist));
   document.getElementById('run-list').innerHTML=runs.map(r=>{
@@ -357,8 +670,6 @@ function renderRuns(runs){
     </div>`;
   }).join('');
 }
-
-// Static fallback data — shown instantly, overwritten by garmin_data.json fetch below
 renderRuns([
   {date:'7 Jun',dist:23.0,hr:143,pb:true},
   {date:'4 Jun',dist:6.2,hr:130},
@@ -369,97 +680,29 @@ renderRuns([
   {date:'17 May',dist:12.3,hr:164},
 ]);
 
-// --- Countdown + progress ---
-function pad(n){return String(n).padStart(2,'0')}
-function tick(){
-  const now=new Date();
-  document.getElementById('live-time').textContent=now.toLocaleTimeString('en-GB');
-  const diff=RACE-now;
-  if(diff>0){
-    const d=Math.floor(diff/86400000);
-    document.getElementById('cd-days').textContent=pad(d);
-    document.getElementById('cd-hours').textContent=pad(Math.floor((diff%86400000)/3600000));
-    document.getElementById('cd-mins').textContent=pad(Math.floor((diff%3600000)/60000));
-    document.getElementById('cd-secs').textContent=pad(Math.floor((diff%60000)/1000));
-    document.getElementById('days-inline').textContent=d;
-    document.getElementById('days-card').textContent=d;
-    document.getElementById('fun-days').textContent=d;
-  }
-  const tot=RACE-TRAIN_START;
-  const el=now-TRAIN_START;
-  const pct=Math.max(0,Math.min(100,Math.round((el/tot)*100)));
-  document.getElementById('prog-fill').style.width=pct+'%';
-  document.getElementById('pct-label').textContent=pct+'% of journey complete';
-  const threeH=3*60*60*1000;
-  const rem=threeH-(now.getTime()%threeH);
-  document.getElementById('next-refresh').textContent=pad(Math.floor(rem/3600000))+':'+pad(Math.floor((rem%3600000)/60000))+':'+pad(Math.floor((rem%60000)/1000));
-}
-
-const MOTIVATIONS=[
-  "The wall at 70 km is real. But so is the finish line at Henley. <strong>You only stop when you choose to.</strong>",
-  "23 km at 143 bpm today. That's your ultra pace. <strong>Remember how that felt.</strong>",
-  "Every step in training is a deposit. <strong>Race day is the withdrawal. Make it count.</strong>",
-  "Walk, jog, shuffle — <strong>forward is the only direction that matters.</strong>",
-  "Switzerland builds the engine. Tomorrowland builds the feet. Australia builds the mind. <strong>Everything counts.</strong>",
-  "Checkpoint to checkpoint. Nothing else. <strong>One marquee at a time.</strong>",
-  "Eat before you're hungry. Drink before you're thirsty. Walk before you're broken. <strong>That's the ultra game.</strong>",
-  "The Thames doesn't care how fast you are. It just keeps flowing. <strong>So should you.</strong>",
-  "VO2 max 51 and climbing. <strong>The data says you're ready. Trust it.</strong>",
-  "3,000 people start at Putney. Most finish. <strong>So will you.</strong>",
-  "This is a mental event that happens to involve running. <strong>Your mind finishes first.</strong>",
-  "Richmond feels easy. Hampton Court feels fine. Runnymede is where it starts. <strong>Henley is where it ends.</strong>"
-];
-document.getElementById('motivation-text').innerHTML=MOTIVATIONS[Math.floor(Date.now()/(2*60*60*1000))%MOTIVATIONS.length];
-
-tick();
-setInterval(tick,1000);
-
-// --- Charts (stored as refs so they can be updated when garmin_data.json loads) ---
-let vo2ChartRef=null,stepsChartRef=null;
-
 function initVO2Chart(labels,data){
-  if(vo2ChartRef){
-    vo2ChartRef.data.labels=labels;
-    vo2ChartRef.data.datasets[0].data=data;
-    vo2ChartRef.update();
-    return;
-  }
-  vo2ChartRef=new Chart(document.getElementById('vo2Chart').getContext('2d'),{
-    type:'line',
-    data:{labels,datasets:[{label:'VO2 max',data,borderColor:'#00F5FF',backgroundColor:'rgba(0,245,255,0.07)',borderWidth:2,pointBackgroundColor:'#00F5FF',pointBorderColor:'#00F5FF',pointRadius:3,fill:true,tension:0.4}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A0028',borderColor:'rgba(0,245,255,0.4)',borderWidth:1,titleColor:'#B08FD0',bodyColor:'#F0E6FF',callbacks:{label:c=>' VO2: '+c.parsed.y}}},scales:{x:{ticks:{color:'#6B4F88',font:{size:9},maxRotation:45},grid:{color:'rgba(180,79,255,0.08)'}},y:{min:45,max:55,ticks:{color:'#6B4F88',font:{size:9},stepSize:1},grid:{color:'rgba(180,79,255,0.08)'}}}}
-  });
+  const cfg={type:'line',data:{labels,datasets:[{label:'VO2 max',data,borderColor:'#1E2D4A',backgroundColor:'rgba(30,45,74,0.08)',borderWidth:2,pointBackgroundColor:'#B83220',pointBorderColor:'#B83220',pointRadius:4,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#2C2010',borderColor:'rgba(184,50,32,0.4)',borderWidth:1,titleColor:'#E8DFC4',bodyColor:'#F2ECD8',callbacks:{label:c=>' VO2: '+c.parsed.y}}},scales:{x:{ticks:{color:'#8B7355',font:{size:9},maxRotation:45},grid:{color:'rgba(139,115,85,0.15)'}},y:{min:45,max:55,ticks:{color:'#8B7355',font:{size:9},stepSize:1},grid:{color:'rgba(139,115,85,0.15)'}}}}};
+  if(vo2ChartRef){vo2ChartRef.data.labels=labels;vo2ChartRef.data.datasets[0].data=data;vo2ChartRef.update();return;}
+  vo2ChartRef=new Chart(document.getElementById('vo2Chart').getContext('2d'),cfg);
 }
 
 function initStepsChart(labels,data){
   const avg=Math.round(data.reduce((a,b)=>a+b,0)/data.length);
-  const bg=data.map(v=>v>=avg?'rgba(180,79,255,0.7)':'rgba(180,79,255,0.25)');
-  const bc=data.map(v=>v>=avg?'#B44FFF':'rgba(180,79,255,0.4)');
-  if(stepsChartRef){
-    stepsChartRef.data.labels=labels;
-    stepsChartRef.data.datasets[0].data=data;
-    stepsChartRef.data.datasets[0].backgroundColor=bg;
-    stepsChartRef.data.datasets[0].borderColor=bc;
-    stepsChartRef.data.datasets[1].data=data.map(()=>avg);
-    stepsChartRef.update();
-    return;
-  }
-  stepsChartRef=new Chart(document.getElementById('stepsChart').getContext('2d'),{
-    type:'bar',
-    data:{labels,datasets:[{label:'Steps',data,backgroundColor:bg,borderColor:bc,borderWidth:1,borderRadius:0},{label:'Avg',data:data.map(()=>avg),type:'line',borderColor:'rgba(255,45,155,0.7)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A0028',borderColor:'rgba(180,79,255,0.4)',borderWidth:1,titleColor:'#B08FD0',bodyColor:'#F0E6FF',callbacks:{label:c=>c.dataset.label==='Avg'?' Avg: '+avg.toLocaleString():' '+c.parsed.y.toLocaleString()+' steps'}}},scales:{x:{ticks:{color:'#6B4F88',font:{size:9},maxRotation:45},grid:{display:false}},y:{ticks:{color:'#6B4F88',font:{size:9},callback:v=>(v/1000).toFixed(0)+'k'},grid:{color:'rgba(180,79,255,0.08)'}}}}
-  });
+  const bg=data.map(v=>v>=avg?'rgba(200,136,42,0.75)':'rgba(200,136,42,0.3)');
+  const bc=data.map(v=>v>=avg?'#A86E18':'rgba(200,136,42,0.4)');
+  const cfg={type:'bar',data:{labels,datasets:[{label:'Steps',data,backgroundColor:bg,borderColor:bc,borderWidth:1,borderRadius:0},{label:'Avg',data:data.map(()=>avg),type:'line',borderColor:'rgba(184,50,32,0.6)',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#2C2010',borderColor:'rgba(200,136,42,0.4)',borderWidth:1,titleColor:'#E8DFC4',bodyColor:'#F2ECD8',callbacks:{label:c=>c.dataset.label==='Avg'?' Avg: '+avg.toLocaleString():' '+c.parsed.y.toLocaleString()+' steps'}}},scales:{x:{ticks:{color:'#8B7355',font:{size:9},maxRotation:45},grid:{display:false}},y:{ticks:{color:'#8B7355',font:{size:9},callback:v=>(v/1000).toFixed(0)+'k'},grid:{color:'rgba(139,115,85,0.15)'}}}}};
+  if(stepsChartRef){stepsChartRef.data.labels=labels;stepsChartRef.data.datasets[0].data=data;stepsChartRef.data.datasets[0].backgroundColor=bg;stepsChartRef.data.datasets[0].borderColor=bc;stepsChartRef.data.datasets[1].data=data.map(()=>avg);stepsChartRef.update();return;}
+  stepsChartRef=new Chart(document.getElementById('stepsChart').getContext('2d'),cfg);
 }
 
 initVO2Chart(['1 Mar','15 Mar','1 Apr','14 Apr','12 May','23 May','7 Jun'],[50,49,48,49,50,51,51]);
 initStepsChart(['13 Apr','20 Apr','27 Apr','4 May','11 May','18 May','25 May','1 Jun'],[107757,108343,103099,114372,104692,96953,111657,130102]);
 
-// --- Apply garmin_data.json to DOM ---
 function $s(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
 function $h(id,val){const e=document.getElementById(id);if(e)e.innerHTML=val;}
 
 function applyGarminData(G){
-  $h('g-vitals-date','fitness vitals · '+G.date);
+  $h('g-vitals-date','Fitness Vitals · '+G.date+'<span class="sec-stamp">Official Record</span>');
   $s('vo2-live',G.vo2max);
   $s('g-vo2-value',G.vo2max);
   $s('g-load-ratio',G.loadRatio);
@@ -467,7 +710,7 @@ function applyGarminData(G){
   $s('g-hrv-status',G.hrvStatus);
   $s('g-hrv-sub',G.hrvSub);
   const lr=document.getElementById('g-longest-run');
-  if(lr)lr.innerHTML=G.longestRunKm+'<span style="font-size:1rem"> km</span>';
+  if(lr)lr.innerHTML=G.longestRunKm+' <span style="font-size:1rem">km</span>';
   $s('g-longest-sub',G.longestRunDate+' · new PB');
   $s('g-status-val',G.trainingStatus);
   $s('g-aerobic-val',G.aerobicBalance);
@@ -495,41 +738,38 @@ function applyGarminData(G){
   if(G.stepsChart)initStepsChart(G.stepsChart.labels,G.stepsChart.data);
 }
 
-// Fetch live data — garmin_data.json is committed by the GitHub Actions workflow
 fetch('garmin_data.json?t='+Date.now())
   .then(r=>r.ok?r.json():null)
   .then(d=>{if(d)applyGarminData(d);})
   .catch(()=>{});
 
-// --- Weather ---
 async function loadWeather(){
   const grid=document.getElementById('weather-grid');
   const status=document.getElementById('weather-status');
   try{
     const url='https://api.open-meteo.com/v1/forecast?latitude=51.535&longitude=-0.900&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m&timezone=Europe/London&start_date=2026-09-12&end_date=2026-09-12';
-    const r=await fetch(url);
-    const d=await r.json();
-    const WMO={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',51:'Light drizzle',53:'Drizzle',61:'Light rain',63:'Rain',80:'Showers',95:'Thunderstorm'};
+    const r=await fetch(url);const d=await r.json();
+    const WMO={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',51:'Lt drizzle',53:'Drizzle',61:'Lt rain',63:'Rain',80:'Showers',95:'Thunder'};
     const ICON={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',53:'🌦️',61:'🌧️',63:'🌧️',80:'🌦️',95:'⛈️'};
     const hours=[0,4,6,8,10,12,14,16,18,20,22];
-    const labels=['Midnight','4 AM','6 AM ▶','8 AM','10 AM','Noon','2 PM','4 PM','6 PM','8 PM','10 PM'];
+    const labels=['Midnight','4 AM','6 AM','8 AM','10 AM','Noon','2 PM','4 PM','6 PM','8 PM','10 PM'];
     grid.innerHTML=hours.map((h,i)=>{
       const temp=Math.round(d.hourly.temperature_2m[h]);
       const code=d.hourly.weathercode[h];
       const rain=d.hourly.precipitation_probability[h];
       const wind=Math.round(d.hourly.windspeed_10m[h]);
       const isStart=h===6;
-      return `<div class="weather-cell" style="${isStart?'border-color:var(--neon-blue);':''}">
-        <div class="weather-time" style="${isStart?'color:var(--neon-blue)':''}">${labels[i]}</div>
-        <div class="weather-icon">${ICON[code]||'🌡️'}</div>
-        <div class="weather-temp">${temp}°C</div>
-        <div class="weather-desc">${WMO[code]||'—'}</div>
-        <div class="weather-desc">${rain}% · ${wind}km/h</div>
+      return `<div class="weather-cell" style="${isStart?'border:2px solid var(--red);background:rgba(184,50,32,0.06);':''}">
+        <div class="weather-time" style="${isStart?'color:var(--red)':''}">${labels[i]}${isStart?' START':''}</div>
+        <div class="weather-icon">${ICON[code]||'?'}</div>
+        <div class="weather-temp">${temp}&deg;C</div>
+        <div class="weather-desc">${WMO[code]||'-'}</div>
+        <div class="weather-desc">${rain}% - ${wind}km/h</div>
       </div>`;
     }).join('');
-    status.innerHTML='<span style="color:var(--neon-green)">●</span> Live · Open-Meteo · Henley 51.5°N 0.9°W · updates hourly';
+    status.innerHTML='Live forecast - Open-Meteo - Henley 51.5N 0.9W - updates hourly';
   }catch(e){
-    grid.innerHTML='<div style="color:var(--text-mid);font-size:12px;padding:.5rem;font-family:var(--font-body)">Weather unavailable — check back closer to race day.</div>';
+    grid.innerHTML='<div style="font-size:12px;padding:.5rem;color:var(--worn2)">Weather data unavailable - check back closer to race day.</div>';
     status.textContent='Could not load forecast.';
   }
 }
