@@ -3,956 +3,484 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thames Path Ultra — Andy's race dashboard · LightningAndy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Thames Path Ultra — Andy's Race Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-:root {
-  --teal: #0d9e6e;
-  --teal-dim: #084d35;
-  --teal-glow: rgba(13,158,110,0.15);
-  --gold: #c8922a;
-  --gold-dim: #7a5510;
-  --bg: #0b0e0d;
-  --bg2: #111614;
-  --bg3: #161c19;
-  --surface: #1a211d;
-  --surface2: #1f2820;
-  --border: rgba(255,255,255,0.07);
-  --border-bright: rgba(255,255,255,0.12);
-  --text: #e8ede9;
-  --text-mid: #8a9e90;
-  --text-dim: #4d6054;
-  --mono: 'DM Mono', monospace;
-  --serif: 'Instrument Serif', serif;
-  --sans: 'DM Sans', sans-serif;
+:root{
+  --neon-purple:#B44FFF;--neon-blue:#00F5FF;--neon-pink:#FF2D9B;--neon-green:#39FF14;--neon-yellow:#FFE500;
+  --dim-purple:#7B2FBE;--dim-blue:#0099AA;
+  --bg:#0A000F;--surface:#100018;--surface2:#1A0028;--surface3:#220035;
+  --grid-line:rgba(180,79,255,0.12);--border-purple:rgba(180,79,255,0.4);
+  --border-blue:rgba(0,245,255,0.4);--border-pink:rgba(255,45,155,0.3);
+  --text:#F0E6FF;--text-mid:#B08FD0;--text-dim:#6B4F88;
+  --font-display:'Orbitron',monospace;--font-body:'Rajdhani',sans-serif;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  font-weight: 300;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;min-height:100vh;overflow-x:hidden}
 
-/* background texture */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+  pointer-events:none;z-index:0}
 
-.page { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2rem 1.5rem 4rem}
 
-/* HEADER */
-.hero {
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 2rem;
-  margin-bottom: 2rem;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 1rem;
-  align-items: end;
-}
-.hero-eyebrow {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--teal);
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  margin-bottom: .5rem;
-}
-.hero-title {
-  font-family: var(--serif);
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 400;
-  line-height: 1.1;
-  color: var(--text);
-}
-.hero-title em { color: var(--teal); font-style: italic; }
-.hero-sub {
-  font-size: 13px;
-  color: var(--text-mid);
-  margin-top: .5rem;
-  font-family: var(--mono);
-  letter-spacing: .03em;
-}
-.hero-badge {
-  text-align: right;
-}
-.updated-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  display: block;
-  margin-bottom: 6px;
-}
-.live-dot {
-  display: inline-block;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--teal);
-  margin-right: 5px;
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.hero{text-align:center;padding:1.5rem 0 1.25rem;border-bottom:1px solid var(--border-purple);margin-bottom:1.5rem}
+.hero-eyebrow{font-family:var(--font-display);font-size:9px;color:var(--neon-blue);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.5rem}
+.hero-title{font-family:var(--font-display);font-size:clamp(1.6rem,5vw,3rem);font-weight:900;color:var(--text);line-height:1.1;text-transform:uppercase}
+.hero-title em{color:var(--neon-purple);font-style:normal}
+.hero-sub{font-family:var(--font-body);font-size:13px;color:var(--text-mid);margin-top:.4rem;letter-spacing:.08em}
+.hero-meta{display:flex;justify-content:center;align-items:center;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem;font-family:var(--font-display);font-size:9px;color:var(--text-dim);letter-spacing:.1em}
+.hero-meta b{color:var(--neon-blue);font-weight:400}
 
-/* COUNTDOWN */
-.countdown-strip {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-}
-.cd-cell {
-  background: var(--surface);
-  padding: 1.5rem 1rem;
-  text-align: center;
-  transition: background .3s;
-}
-.cd-cell:hover { background: var(--surface2); }
-.cd-num {
-  font-family: var(--mono);
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 500;
-  color: var(--teal);
-  line-height: 1;
-  letter-spacing: -.02em;
-  font-variant-numeric: tabular-nums;
-}
-.cd-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  margin-top: 6px;
-}
+.live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--neon-green);margin-right:4px;animation:blink 1s step-end infinite;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-/* PROGRESS BAR */
-.progress-section {
-  margin-bottom: 2rem;
-}
-.progress-meta {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-bottom: 8px;
-}
-.progress-meta strong { color: var(--text-mid); font-weight: 400; }
-.progress-track {
-  height: 4px;
-  background: var(--surface2);
-  border-radius: 99px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--teal-dim), var(--teal));
-  border-radius: 99px;
-  transition: width 1s ease;
-  position: relative;
-}
-.progress-fill::after {
-  content: '';
-  position: absolute;
-  right: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--teal);
-}
+.cd-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border-purple);border:1px solid var(--border-purple);margin-bottom:1.5rem;overflow:hidden}
+.cd-cell{background:var(--surface);padding:1.25rem .75rem;text-align:center}
+.cd-num{font-family:var(--font-display);font-size:clamp(2rem,6vw,3.5rem);font-weight:700;color:var(--neon-purple);line-height:1;font-variant-numeric:tabular-nums}
+.cd-label{font-family:var(--font-display);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.15em;margin-top:5px}
 
-/* GRID LAYOUTS */
-.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
-.grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.prog-wrap{margin-bottom:1.5rem}
+.prog-labels{display:flex;justify-content:space-between;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.08em;margin-bottom:6px}
+.prog-pct{color:var(--neon-purple)}
+.prog-track{height:6px;background:var(--surface2);border:1px solid var(--border-purple);overflow:hidden;position:relative}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--dim-purple),var(--neon-purple),var(--neon-blue));transition:width 1s ease;position:relative}
+.prog-fill::after{content:'';position:absolute;right:-1px;top:-3px;width:2px;height:12px;background:var(--neon-blue)}
 
-/* CARDS */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1.25rem;
-  position: relative;
-  overflow: hidden;
-}
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-bright), transparent);
-}
-.card-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  margin-bottom: .75rem;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.card-label svg { width: 12px; height: 12px; stroke: var(--teal); fill: none; stroke-width: 2; }
-.card-value {
-  font-family: var(--mono);
-  font-size: 2rem;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1;
-}
-.card-sub {
-  font-size: 11px;
-  color: var(--text-mid);
-  margin-top: 4px;
-}
-.card-accent { color: var(--teal); }
-.card-gold { color: var(--gold); }
+.sec-head{font-family:var(--font-display);font-size:9px;color:var(--neon-blue);letter-spacing:.2em;text-transform:uppercase;margin:2rem 0 .75rem;display:flex;align-items:center;gap:12px}
+.sec-head::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border-blue),transparent)}
 
-/* STAT TABLE */
-.stat-list { list-style: none; }
-.stat-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-.stat-list li:last-child { border-bottom: none; }
-.stat-list .k { color: var(--text-mid); font-weight: 300; }
-.stat-list .v { font-family: var(--mono); color: var(--text); font-size: 12px; }
-.stat-list .v.good { color: var(--teal); }
-.stat-list .v.warn { color: var(--gold); }
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-bottom:1rem}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1rem}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.75rem;margin-bottom:1rem}
 
-/* CHART CONTAINER */
-.chart-wrap {
-  position: relative;
-  width: 100%;
-}
+.card{background:var(--surface);border:1px solid var(--border-purple);padding:1.125rem;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--neon-purple),var(--neon-blue))}
+.card-blue{border-color:var(--border-blue)}
+.card-blue::before{background:linear-gradient(90deg,var(--neon-blue),var(--neon-green))}
+.card-pink{border-color:var(--border-pink)}
+.card-pink::before{background:linear-gradient(90deg,var(--neon-pink),var(--neon-purple))}
 
-/* TIMELINE */
-.timeline { list-style: none; }
-.tl-item {
-  display: grid;
-  grid-template-columns: 60px 12px 1fr;
-  gap: 0 12px;
-  padding: 8px 0;
-  align-items: start;
-  font-size: 12px;
-}
-.tl-date {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  padding-top: 2px;
-  text-align: right;
-}
-.tl-line {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 4px;
-}
-.tl-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.tl-connector {
-  width: 1px;
-  flex: 1;
-  background: var(--border);
-  min-height: 24px;
-  margin-top: 3px;
-}
-.tl-item:last-child .tl-connector { display: none; }
-.tl-name { color: var(--text); font-weight: 400; line-height: 1.4; }
-.tl-desc { color: var(--text-mid); font-size: 11px; margin-top: 1px; }
+.card-label{font-family:var(--font-display);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.15em;margin-bottom:.6rem}
+.card-value{font-family:var(--font-display);font-size:1.9rem;font-weight:700;color:var(--neon-purple);line-height:1}
+.cv-blue{color:var(--neon-blue)}.cv-pink{color:var(--neon-pink)}.cv-green{color:var(--neon-green)}
+.card-sub{font-family:var(--font-body);font-size:11px;color:var(--text-mid);margin-top:4px;letter-spacing:.03em}
 
-.dot-base { background: var(--teal); }
-.dot-build { background: #378ADD; }
-.dot-away { background: #c45d9e; }
-.dot-peak { background: var(--gold); }
-.dot-taper { background: #639922; }
-.dot-race { background: #7F77DD; box-shadow: 0 0 8px rgba(127,119,221,0.6); }
+.stat-list{list-style:none}
+.stat-list li{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--grid-line);font-size:12px}
+.stat-list li:last-child{border-bottom:none}
+.stat-list .k{font-family:var(--font-body);color:var(--text-mid);letter-spacing:.02em}
+.stat-list .v{font-family:var(--font-display);color:var(--text);font-size:11px}
+.sv-purple{color:var(--neon-purple)}.sv-blue{color:var(--neon-blue)}.sv-pink{color:var(--neon-pink)}.sv-green{color:var(--neon-green)}
 
-/* WEATHER */
-.weather-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-  gap: 8px;
-  margin-top: .5rem;
-}
-.weather-cell {
-  background: var(--surface2);
-  border-radius: 8px;
-  padding: 10px 8px;
-  text-align: center;
-}
-.weather-time {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  margin-bottom: 6px;
-}
-.weather-icon { font-size: 20px; margin-bottom: 4px; }
-.weather-temp {
-  font-family: var(--mono);
-  font-size: 14px;
-  color: var(--text);
-  font-weight: 500;
-}
-.weather-desc { font-size: 9px; color: var(--text-mid); margin-top: 2px; }
-.weather-status {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  margin-top: .75rem;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
+.run-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--grid-line)}
+.run-row:last-child{border-bottom:none}
+.run-date{font-family:var(--font-display);font-size:8px;color:var(--text-dim);width:48px;flex-shrink:0}
+.run-dist{font-family:var(--font-display);font-size:11px;color:var(--neon-purple);width:52px;flex-shrink:0;font-weight:700}
+.run-bar-wrap{flex:1;height:4px;background:var(--surface3);border:1px solid rgba(180,79,255,0.2)}
+.run-bar{height:100%;background:linear-gradient(90deg,var(--dim-purple),var(--neon-purple))}
+.run-hr{font-family:var(--font-display);font-size:9px;width:52px;text-align:right;flex-shrink:0}
+.hr-good{color:var(--neon-green)}.hr-ok{color:var(--neon-blue)}.hr-high{color:var(--neon-pink)}
+.pb-badge{font-family:var(--font-display);font-size:7px;color:var(--neon-green);border:1px solid rgba(57,255,20,.4);padding:1px 4px;margin-left:4px;vertical-align:middle}
 
-/* CHECKPOINTS */
-.cp-strip {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  margin-top: .5rem;
-}
-.cp-node {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-shrink: 0;
-}
-.cp-dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--surface2);
-  border: 1px solid var(--teal-dim);
-}
-.cp-dot.start, .cp-dot.finish { background: var(--teal); border-color: var(--teal); }
-.cp-dot.halfway { background: var(--gold); border-color: var(--gold); }
-.cp-line {
-  height: 1px;
-  width: 40px;
-  background: var(--border-bright);
-  flex-shrink: 0;
-}
-.cp-label { font-size: 9px; color: var(--text-dim); margin-top: 4px; font-family: var(--mono); text-align: center; line-height: 1.3; }
-.cp-km { font-size: 10px; color: var(--teal); font-family: var(--mono); margin-top: 1px; }
+.fun-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.75rem;margin-bottom:1rem}
+.fun-stat{background:var(--surface2);border:1px solid var(--grid-line);padding:.875rem;text-align:center}
+.fun-num{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--neon-blue);line-height:1}
+.fun-label{font-family:var(--font-body);font-size:10px;color:var(--text-dim);margin-top:3px;letter-spacing:.04em}
 
-/* MOTIVATION */
-.motivation-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--teal);
-  border-radius: 0 12px 12px 0;
-  padding: 1.25rem 1.5rem;
-  margin-top: 1rem;
-}
-.motivation-text {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  color: var(--text);
-  line-height: 1.6;
-  font-style: italic;
-}
-.motivation-text strong { font-style: normal; color: var(--teal); font-family: var(--mono); font-size: .95rem; }
+.tl-item{display:grid;grid-template-columns:60px 12px 1fr;gap:0 12px;padding:8px 0;align-items:start;font-size:12px}
+.tl-date{font-family:var(--font-display);font-size:8px;color:var(--text-dim);padding-top:2px;text-align:right;letter-spacing:.04em}
+.tl-line{display:flex;flex-direction:column;align-items:center;padding-top:3px}
+.tl-dot{width:8px;height:8px;border-radius:0;flex-shrink:0}
+.tl-conn{width:1px;flex:1;background:var(--border-purple);min-height:22px;margin-top:3px}
+.tl-item:last-child .tl-conn{display:none}
+.tl-name{color:var(--text);font-weight:400;line-height:1.4;font-family:var(--font-body);font-size:13px}
+.tl-desc{color:var(--text-mid);font-size:11px;margin-top:1px;font-family:var(--font-body)}
 
-/* SECTION HEADING */
-.section-head {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: .15em;
-  margin: 2rem 0 1rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.section-head::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
+.phase-tag{display:inline-block;font-family:var(--font-display);font-size:7px;padding:1px 6px;margin-left:5px;text-transform:uppercase;letter-spacing:.08em;vertical-align:middle}
+.p-base{background:rgba(57,255,20,.1);color:var(--neon-green);border:1px solid rgba(57,255,20,.3)}
+.p-build{background:rgba(0,245,255,.1);color:var(--neon-blue);border:1px solid var(--border-blue)}
+.p-peak{background:rgba(255,229,0,.1);color:var(--neon-yellow);border:1px solid rgba(255,229,0,.3)}
+.p-taper{background:rgba(180,79,255,.1);color:var(--neon-purple);border:1px solid var(--border-purple)}
+.p-race{background:rgba(255,45,155,.1);color:var(--neon-pink);border:1px solid var(--border-pink)}
+.p-away{background:rgba(255,45,155,.08);color:var(--neon-pink);border:1px solid var(--border-pink)}
 
-/* FOOTER */
-footer {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text-dim);
-}
-.footer-right { text-align: right; }
+.act-pill{display:inline-block;font-family:var(--font-display);font-size:8px;padding:2px 8px;margin:3px 3px 0 0;text-transform:uppercase;letter-spacing:.06em}
+.ap-run{background:rgba(180,79,255,.15);color:var(--neon-purple);border:1px solid var(--border-purple)}
+.ap-swim{background:rgba(0,245,255,.1);color:var(--neon-blue);border:1px solid var(--border-blue)}
+.ap-gym{background:rgba(57,255,20,.1);color:var(--neon-green);border:1px solid rgba(57,255,20,.3)}
+.ap-hiit{background:rgba(255,45,155,.1);color:var(--neon-pink);border:1px solid var(--border-pink)}
+.ap-tennis{background:rgba(255,229,0,.1);color:var(--neon-yellow);border:1px solid rgba(255,229,0,.3)}
+.ap-bike{background:rgba(0,245,255,.08);color:var(--neon-blue);border:1px solid rgba(0,245,255,.2)}
 
-/* PHASE TAG */
-.phase-tag {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 9px;
-  padding: 2px 7px;
-  border-radius: 99px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-.phase-base { background: rgba(13,158,110,.15); color: #5DCAA5; }
-.phase-build { background: rgba(55,138,221,.15); color: #85B7EB; }
-.phase-peak { background: rgba(200,146,42,.15); color: #EF9F27; }
-.phase-taper { background: rgba(99,153,34,.15); color: #97C459; }
-.phase-race { background: rgba(127,119,221,.15); color: #AFA9EC; }
-.phase-away { background: rgba(196,93,158,.15); color: #ED93B1; }
+.weather-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin-top:.5rem}
+.weather-cell{background:var(--surface2);border:1px solid var(--grid-line);padding:8px 6px;text-align:center}
+.weather-time{font-family:var(--font-display);font-size:8px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.weather-icon{font-size:18px;margin-bottom:3px}
+.weather-temp{font-family:var(--font-display);font-size:13px;color:var(--text);font-weight:500}
+.weather-desc{font-size:9px;color:var(--text-dim);margin-top:2px;font-family:var(--font-body)}
 
-@media (max-width: 600px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-badge { text-align: left; }
-  .countdown-strip { grid-template-columns: repeat(2,1fr); }
-  .grid-4 { grid-template-columns: repeat(2,1fr); }
+.motivation-box{border:1px solid var(--border-purple);border-left:3px solid var(--neon-purple);padding:1.125rem 1.25rem;margin-top:1rem;background:var(--surface)}
+.motivation-text{font-family:var(--font-body);font-size:15px;color:var(--text-mid);line-height:1.6;font-style:italic}
+.motivation-text strong{font-style:normal;color:var(--neon-purple);font-family:var(--font-display);font-size:12px}
+
+footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-purple);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.08em}
+
+@media(max-width:600px){
+  .cd-strip{grid-template-columns:repeat(2,1fr)}
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .fun-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-meta{gap:.75rem}
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- HEADER -->
-  <div class="hero">
+<div class="hero">
+  <div class="hero-eyebrow">andy's ultra command centre · 2026</div>
+  <h1 class="hero-title">Thames Path <em>Ultra</em><br>100 Kilometres</h1>
+  <p class="hero-sub">Putney Bridge → Henley-on-Thames · 12 September 2026</p>
+  <div class="hero-meta">
+    <span><span class="live-dot"></span><span id="live-time">--:--:--</span></span>
+    <span>VO2 max <b id="vo2-live">51</b></span>
+    <span>status <b>Productive</b></span>
+    <span>days to go <b id="days-inline">--</b></span>
+    <span>next refresh <b id="next-refresh">--</b></span>
+  </div>
+</div>
+
+<div class="cd-strip">
+  <div class="cd-cell"><div class="cd-num" id="cd-days">--</div><div class="cd-label">days</div></div>
+  <div class="cd-cell"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">hours</div></div>
+  <div class="cd-cell"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">minutes</div></div>
+  <div class="cd-cell"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">seconds</div></div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-labels">
+    <span>Training start · 18 May 2026</span>
+    <span class="prog-pct" id="pct-label">0% complete</span>
+    <span>Race day · 12 Sep 2026</span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+</div>
+
+<div class="sec-head">fitness vitals · 7 Jun 2026</div>
+<div class="g4">
+  <div class="card">
+    <div class="card-label">VO2 max</div>
+    <div class="card-value">51</div>
+    <div class="card-sub">↑ from 50 · trending up</div>
+  </div>
+  <div class="card card-blue">
+    <div class="card-label">Load ratio</div>
+    <div class="card-value cv-blue">1.0</div>
+    <div class="card-sub">perfectly balanced</div>
+  </div>
+  <div class="card card-pink">
+    <div class="card-label">HRV status</div>
+    <div class="card-value cv-pink" style="font-size:1.1rem;padding-top:6px">Balanced</div>
+    <div class="card-sub">51–57 ms weekly avg</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Longest run ever</div>
+    <div class="card-value cv-green">23<span style="font-size:1rem"> km</span></div>
+    <div class="card-sub">7 Jun 2026 · new PB</div>
+  </div>
+  <div class="card card-blue">
+    <div class="card-label">Training status</div>
+    <div class="card-value cv-blue" style="font-size:1rem;padding-top:8px">Productive</div>
+    <div class="card-sub">fitness trending up</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Aerobic balance</div>
+    <div class="card-value cv-pink" style="font-size:.9rem;padding-top:8px">Low shortage</div>
+    <div class="card-sub">today's run helps fix this</div>
+  </div>
+  <div class="card card-pink">
+    <div class="card-label">Weekly avg steps</div>
+    <div class="card-value" style="font-size:1.3rem">98k</div>
+    <div class="card-sub">~70 km/week on foot</div>
+  </div>
+  <div class="card card-blue">
+    <div class="card-label">Days to race</div>
+    <div class="card-value cv-blue" id="days-card">--</div>
+    <div class="card-sub">12 September 2026</div>
+  </div>
+</div>
+
+<div class="sec-head">recent runs · may–jun 2026</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-label">Distance log</div>
+    <div id="run-list"></div>
+  </div>
+  <div class="card card-blue">
+    <div class="card-label">VO2 max trend · Mar → Jun</div>
+    <div style="position:relative;width:100%;height:180px">
+      <canvas id="vo2Chart" role="img" aria-label="VO2 max trend chart from March to June 2026 showing improvement from 48 to 51">VO2 max rose from 48 in late March to 51 in June 2026.</canvas>
+    </div>
+  </div>
+</div>
+
+<div class="sec-head">race predictions</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-label">Garmin predicted finish times</div>
+    <ul class="stat-list">
+      <li><span class="k">5 km</span><span class="v sv-blue">23:24</span></li>
+      <li><span class="k">10 km</span><span class="v sv-blue">50:56</span></li>
+      <li><span class="k">Half marathon</span><span class="v sv-purple">1:56:01</span></li>
+      <li><span class="k">Marathon</span><span class="v sv-purple">4:18:06</span></li>
+      <li><span class="k" style="color:var(--text)">Ultra 100 km <span style="font-size:9px;color:var(--text-dim)">(estimated)</span></span><span class="v sv-pink" style="font-size:14px">~20–24 hrs</span></li>
+    </ul>
+    <div style="margin-top:.75rem;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.06em">Ultra estimate based on walk/jog strategy · improves as training builds</div>
+  </div>
+  <div class="card card-pink">
+    <div class="card-label">Weekly steps · last 8 weeks</div>
+    <div style="position:relative;width:100%;height:180px">
+      <canvas id="stepsChart" role="img" aria-label="Weekly step count bar chart showing 80k to 114k steps over 8 weeks">Weekly steps ranged from 80,716 to 114,372 over the last 8 weeks.</canvas>
+    </div>
+  </div>
+</div>
+
+<div class="sec-head">fun stats</div>
+<div class="fun-grid">
+  <div class="fun-stat"><div class="fun-num" id="fun-days">96</div><div class="fun-label">days to race</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-purple)">19</div><div class="fun-label">runs logged</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-pink)">163</div><div class="fun-label">avg bpm (↓ improving)</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-green)">51</div><div class="fun-label">VO2 max · up from 50</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-blue)">2,500</div><div class="fun-label">cal burned today</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-purple)">7</div><div class="fun-label">gym sessions</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-blue)">2</div><div class="fun-label">swims logged</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-yellow)">2</div><div class="fun-label">tennis sessions</div></div>
+</div>
+
+<div class="sec-head">activity mix · last 5 weeks</div>
+<div class="card" style="margin-bottom:1rem">
+  <div class="card-label">All activity types</div>
+  <div style="margin-top:.5rem">
+    <span class="act-pill ap-run">running × 19</span>
+    <span class="act-pill ap-gym">strength × 7</span>
+    <span class="act-pill ap-hiit">hiit × 3</span>
+    <span class="act-pill ap-swim">swimming × 2</span>
+    <span class="act-pill ap-tennis">tennis × 2</span>
+    <span class="act-pill ap-bike">cycling × 4</span>
+    <span class="act-pill ap-bike">e-bike × 3</span>
+    <span class="act-pill ap-gym">hiking × 1</span>
+  </div>
+  <div style="margin-top:.875rem;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.06em">73 total activities since 1 May · averaging 3.5 per day including walks</div>
+</div>
+
+<div class="sec-head">training plan · key milestones</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-label">Phase timeline</div>
     <div>
-      <div class="hero-eyebrow">Andy's race dashboard · LightningAndy · 2026</div>
-      <h1 class="hero-title">Thames Path <em>Ultra</em><br>100 kilometres</h1>
-      <p class="hero-sub">Putney Bridge → Henley-on-Thames · 12 September 2026</p>
-    </div>
-    <div class="hero-badge">
-      <span class="updated-label">live dashboard</span>
-      <span style="font-family:var(--mono);font-size:11px;color:var(--text-mid)">
-        <span class="live-dot"></span><span id="live-time">--:--</span>
-      </span>
-      <div style="margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--text-dim)">next refresh <span id="next-refresh">--</span></div>
-    </div>
-  </div>
-
-  <!-- COUNTDOWN -->
-  <div class="countdown-strip">
-    <div class="cd-cell"><div class="cd-num" id="cd-days">--</div><div class="cd-label">days</div></div>
-    <div class="cd-cell"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">hours</div></div>
-    <div class="cd-cell"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">minutes</div></div>
-    <div class="cd-cell"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">seconds</div></div>
-  </div>
-
-  <!-- PROGRESS -->
-  <div class="progress-section">
-    <div class="progress-meta">
-      <span>Training started <strong>18 May 2026</strong></span>
-      <span id="pct-text">0% of journey complete</span>
-      <span>Race day <strong>12 Sep 2026</strong></span>
-    </div>
-    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
-  </div>
-
-  <!-- PHASE + STATUS -->
-  <div class="section-head">current status</div>
-  <div class="grid-4">
-    <div class="card">
-      <div class="card-label">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        Current phase
-      </div>
-      <div style="margin-top:.25rem"><span class="phase-tag phase-base" id="current-phase">Base</span></div>
-      <div class="card-sub" id="phase-desc" style="margin-top:.5rem">Building the long-day habit</div>
-    </div>
-    <div class="card">
-      <div class="card-label">
-        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        VO2 max
-      </div>
-      <div class="card-value card-accent">50</div>
-      <div class="card-sub">top 30% · productive trend</div>
-    </div>
-    <div class="card">
-      <div class="card-label">
-        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        HRV status
-      </div>
-      <div class="card-value" style="font-size:1.3rem;padding-top:4px">Balanced</div>
-      <div class="card-sub">51–58 ms weekly avg</div>
-    </div>
-    <div class="card">
-      <div class="card-label">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Load ratio
-      </div>
-      <div class="card-value card-accent">0.80</div>
-      <div class="card-sub">optimal zone · low injury risk</div>
+      <div class="tl-item"><div class="tl-date">18 May</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-green)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Training begins <span class="phase-tag p-base">base</span></div><div class="tl-desc">20 km long day · back-to-backs start</div></div></div>
+      <div class="tl-item"><div class="tl-date">15 Jun</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-blue)"></div><div class="tl-conn"></div></div><div><div class="tl-name">30 km milestone <span class="phase-tag p-build">build</span></div><div class="tl-desc">first ultra-distance long day</div></div></div>
+      <div class="tl-item"><div class="tl-date">27 Jun</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-pink)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Switzerland cycling <span class="phase-tag p-away">away</span></div><div class="tl-desc">5 days alpine · Geneva to Zurich</div></div></div>
+      <div class="tl-item"><div class="tl-date">16 Jul</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-pink)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Tomorrowland <span class="phase-tag p-away">festival</span></div><div class="tl-desc">Belgium · time on feet counts</div></div></div>
+      <div class="tl-item"><div class="tl-date">25 Jul</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-pink)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Australia travel <span class="phase-tag p-away">away</span></div><div class="tl-desc">maintenance runs · back 9 Aug</div></div></div>
+      <div class="tl-item"><div class="tl-date">15 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-yellow)"></div><div class="tl-conn"></div></div><div><div class="tl-name">40 km long day <span class="phase-tag p-peak">peak</span></div><div class="tl-desc">biggest single session of the plan</div></div></div>
+      <div class="tl-item"><div class="tl-date">22 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-yellow)"></div><div class="tl-conn"></div></div><div><div class="tl-name">50 km dress rehearsal <span class="phase-tag p-peak">peak</span></div><div class="tl-desc">full kit · race nutrition · Thames Path</div></div></div>
+      <div class="tl-item"><div class="tl-date">24 Aug</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-purple)"></div><div class="tl-conn"></div></div><div><div class="tl-name">Taper begins <span class="phase-tag p-taper">taper</span></div><div class="tl-desc">volume drops · legs freshen up</div></div></div>
+      <div class="tl-item"><div class="tl-date">12 Sep</div><div class="tl-line"><div class="tl-dot" style="background:var(--neon-pink);box-shadow:0 0 8px var(--neon-pink)"></div><div class="tl-conn"></div></div><div><div class="tl-name" style="color:var(--neon-pink);font-weight:500">Race day <span class="phase-tag p-race">100 km</span></div><div class="tl-desc">Putney Bridge · ~6:00 AM start</div></div></div>
     </div>
   </div>
-
-  <!-- PREDICTIONS + CHART -->
-  <div class="section-head">race predictions &amp; trend</div>
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-label">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
-        Garmin predicted finish times
-      </div>
-      <ul class="stat-list">
-        <li><span class="k">5 km</span><span class="v good">23:24</span></li>
-        <li><span class="k">10 km</span><span class="v good">50:56</span></li>
-        <li><span class="k">Half marathon</span><span class="v good">1:56:01</span></li>
-        <li><span class="k">Marathon</span><span class="v">4:18:06</span></li>
-        <li>
-          <span class="k" style="color:var(--text)">Ultra 100 km <span style="font-size:10px;color:var(--text-dim)">(est.)</span></span>
-          <span class="v warn" style="font-size:14px">~20–24 hrs</span>
-        </li>
-      </ul>
-      <div style="margin-top:.75rem;font-size:10px;color:var(--text-dim);font-family:var(--mono)">
-        Ultra estimate based on walk/jog pacing. Improves as training builds.
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-label">
-        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        VO2 max trend (Mar → now)
-      </div>
-      <div class="chart-wrap" style="height:180px">
-        <canvas id="vo2Chart" role="img" aria-label="VO2 max trend chart from March to May 2026 showing values between 48 and 50">VO2 max: Mar 50, late Mar 48, Apr 49, May 12 50, May 16 50.</canvas>
-      </div>
-    </div>
+  <div class="card card-blue">
+    <div class="card-label">Key stats</div>
+    <ul class="stat-list">
+      <li><span class="k">Runs this week</span><span class="v sv-green">2 sessions</span></li>
+      <li><span class="k">Run distance this week</span><span class="v sv-green">29.2 km</span></li>
+      <li><span class="k">Longest run ever</span><span class="v sv-green">23 km · today</span></li>
+      <li><span class="k">Today's avg HR</span><span class="v sv-green">143 bpm ✓</span></li>
+      <li><span class="k">Total runs since Apr</span><span class="v sv-purple">19 sessions</span></li>
+      <li><span class="k">Predicted marathon</span><span class="v sv-blue">4:18:06</span></li>
+      <li><span class="k">Sleep score (last)</span><span class="v">70/100 · Fair</span></li>
+      <li><span class="k">Switzerland departs</span><span class="v sv-pink">20 days</span></li>
+    </ul>
   </div>
+</div>
 
-  <!-- WEEKLY STEPS CHART -->
-  <div class="card" style="margin-bottom:1rem">
-    <div class="card-label">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Weekly step count (last 8 weeks)
-    </div>
-    <div class="chart-wrap" style="height:160px">
-      <canvas id="stepsChart" role="img" aria-label="Weekly step count bar chart showing 83k to 113k steps over 8 weeks">Weekly steps ranging from 83,806 to 113,552 over the last 8 weeks.</canvas>
-    </div>
+<div class="sec-head">race day forecast · henley-on-thames</div>
+<div class="card card-blue" style="margin-bottom:1rem">
+  <div class="card-label">12 September 2026 · loading live data...</div>
+  <div class="weather-grid" id="weather-grid">
+    <div class="weather-cell"><div class="weather-time">loading</div><div class="weather-icon">⟳</div><div class="weather-temp">--°C</div></div>
   </div>
-
-  <!-- WEATHER -->
-  <div class="section-head">race day forecast · henley-on-thames</div>
-  <div class="card" style="margin-bottom:1rem">
-    <div class="card-label">
-      <svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/><circle cx="12" cy="12" r="5"/></svg>
-      12 September 2026 · loading live data...
-    </div>
-    <div id="weather-content">
-      <div class="weather-grid" id="weather-grid">
-        <div class="weather-cell"><div class="weather-time">loading</div><div class="weather-icon">⟳</div><div class="weather-temp">--°C</div></div>
-      </div>
-      <div class="weather-status" id="weather-status">Fetching forecast from Open-Meteo...</div>
-    </div>
-    <div style="margin-top:1rem;padding:10px 12px;background:var(--surface2);border-radius:8px;font-size:11px;color:var(--text-mid)">
-      <strong style="color:var(--text-mid);font-family:var(--mono)">Race day tip:</strong> 
-      September Thames Valley is typically 12–18°C at dawn, rising to 18–24°C by afternoon. 
-      Pack a light layer for the start, expect to shed it by Richmond.
-    </div>
+  <div id="weather-status" style="margin-top:.75rem;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.06em">Fetching forecast from Open-Meteo...</div>
+  <div style="margin-top:.75rem;padding:8px 10px;background:var(--surface2);border:1px solid var(--grid-line);font-family:var(--font-body);font-size:11px;color:var(--text-mid)">
+    September Thames Valley is typically 12–18°C at dawn rising to 18–24°C by afternoon. Pack a light layer for the start.
   </div>
+</div>
 
-  <!-- TRAINING TIMELINE -->
-  <div class="section-head">training plan · key milestones</div>
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-label">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Phase timeline
-      </div>
-      <ul class="timeline">
-        <li class="tl-item">
-          <div class="tl-date">18 May</div>
-          <div class="tl-line"><div class="tl-dot dot-base"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name">Training begins <span class="phase-tag phase-base">base</span></div><div class="tl-desc">20 km long day · back-to-backs start</div></div>
-        </li>
-        <li class="tl-item">
-          <div class="tl-date">15 Jun</div>
-          <div class="tl-line"><div class="tl-dot dot-build"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name">30 km milestone <span class="phase-tag phase-build">build</span></div><div class="tl-desc">first ultra-distance long day</div></div>
-        </li>
-        <li class="tl-item">
-          <div class="tl-date">27 Jun</div>
-          <div class="tl-line"><div class="tl-dot dot-away"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name">Switzerland cycling <span class="phase-tag phase-away">away</span></div><div class="tl-desc">5 days alpine · aerobic boost</div></div>
-        </li>
-        <li class="tl-item">
-          <div class="tl-date">16 Jul</div>
-          <div class="tl-line"><div class="tl-dot dot-away"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name">Tomorrowland <span class="phase-tag phase-away">festival</span></div><div class="tl-desc">time on feet · embrace it</div></div>
-        </li>
-        <li class="tl-item">
-          <div class="tl-date">25 Jul</div>
-          <div class="tl-line"><div class="tl-dot dot-away"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name">Australia travel <span class="phase-tag phase-away">away</span></div><div class="tl-desc">maintenance runs · back 9 Aug</div></div>
-        </li>
-        <li class="tl-item">
-          <div class="tl-date">15 Aug</div>
-          <div class="tl-line"><div class="tl-dot dot-peak"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name">40 km long day <span class="phase-tag phase-peak">peak</span></div><div class="tl-desc">biggest single session of the plan</div></div>
-        </li>
-        <li class="tl-item">
-          <div class="tl-date">22 Aug</div>
-          <div class="tl-line"><div class="tl-dot dot-peak"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name">50 km dress rehearsal <span class="phase-tag phase-peak">peak</span></div><div class="tl-desc">full kit · race nutrition · Thames Path</div></div>
-        </li>
-        <li class="tl-item">
-          <div class="tl-date">24 Aug</div>
-          <div class="tl-line"><div class="tl-dot dot-taper"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name">Taper begins <span class="phase-tag phase-taper">taper</span></div><div class="tl-desc">volume drops · legs freshen</div></div>
-        </li>
-        <li class="tl-item">
-          <div class="tl-date">12 Sep</div>
-          <div class="tl-line"><div class="tl-dot dot-race"></div><div class="tl-connector"></div></div>
-          <div><div class="tl-name" style="color:#AFA9EC;font-weight:500">Race day <span class="phase-tag phase-race">100 km</span></div><div class="tl-desc">Putney Bridge · ~6:00 AM start</div></div>
-        </li>
-      </ul>
-    </div>
+<div class="sec-head">today's transmission</div>
+<div class="motivation-box">
+  <div class="motivation-text" id="motivation-text">Loading...</div>
+</div>
 
-    <!-- CHECKPOINTS + STATS -->
-    <div style="display:flex;flex-direction:column;gap:1rem">
-      <div class="card">
-        <div class="card-label">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Route checkpoints
-        </div>
-        <div class="cp-strip">
-          <div class="cp-node"><div class="cp-dot start"></div><div class="cp-label">Putney<br>Bridge</div><div class="cp-km">0</div></div>
-          <div class="cp-line"></div>
-          <div class="cp-node"><div class="cp-dot"></div><div class="cp-label">Rich-<br>mond</div><div class="cp-km">12.5</div></div>
-          <div class="cp-line"></div>
-          <div class="cp-node"><div class="cp-dot"></div><div class="cp-label">Hampton<br>Court</div><div class="cp-km">25</div></div>
-          <div class="cp-line"></div>
-          <div class="cp-node"><div class="cp-dot halfway"></div><div class="cp-label" style="color:var(--gold)">Runny-<br>mede</div><div class="cp-km" style="color:var(--gold)">50</div></div>
-          <div class="cp-line"></div>
-          <div class="cp-node"><div class="cp-dot"></div><div class="cp-label">Wind-<br>sor</div><div class="cp-km">62.5</div></div>
-          <div class="cp-line"></div>
-          <div class="cp-node"><div class="cp-dot"></div><div class="cp-label">Cook-<br>ham</div><div class="cp-km">75</div></div>
-          <div class="cp-line"></div>
-          <div class="cp-node"><div class="cp-dot"></div><div class="cp-label">Mar-<br>low</div><div class="cp-km">87.5</div></div>
-          <div class="cp-line"></div>
-          <div class="cp-node"><div class="cp-dot finish"></div><div class="cp-label" style="color:var(--teal)">Hen-<br>ley</div><div class="cp-km">100</div></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">
-          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          Key fitness stats
-        </div>
-        <ul class="stat-list">
-          <li><span class="k">Weekly avg distance</span><span class="v good">~73 km</span></li>
-          <li><span class="k">Longest run (recent)</span><span class="v">10 km · 7 May</span></li>
-          <li><span class="k">Longest hike</span><span class="v good">18.8 km · Lewes</span></li>
-          <li><span class="k">Training status</span><span class="v good">Productive</span></li>
-          <li><span class="k">Predicted marathon</span><span class="v">4:18:06</span></li>
-          <li><span class="k">ACWR load ratio</span><span class="v good">0.80 optimal</span></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <!-- MOTIVATION -->
-  <div class="section-head">today's mantra</div>
-  <div class="motivation-box">
-    <div class="motivation-text" id="motivation-text">Loading...</div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <div>Thames Path Ultra Challenge · 12–13 September 2026<br>ultrachallenge.com · Putney Bridge to Henley</div>
-    <div class="footer-right">
-      Data from Garmin Connect · Weather via Open-Meteo<br>
-      Auto-refreshes every 2 hours · <span id="footer-updated">--</span>
-    </div>
-  </footer>
+<footer>
+  <div>Thames Path Ultra Challenge · 12–13 September 2026 · ultrachallenge.com</div>
+  <div>Garmin data · 7 Jun 2026 · <span class="live-dot"></span> live · auto-refreshes every 2 hrs</div>
+</footer>
 
 </div>
 
 <script>
-const RACE = new Date('2026-09-12T06:00:00');
-const TRAIN_START = new Date('2026-05-18T00:00:00');
+const RACE=new Date('2026-09-12T06:00:00');
+const TRAIN_START=new Date('2026-05-18T00:00:00');
 
-const PHASES = [
-  { start: new Date('2026-05-18'), end: new Date('2026-06-14'), name:'Base', tag:'phase-base', desc:'Building the long-day habit' },
-  { start: new Date('2026-06-15'), end: new Date('2026-07-19'), name:'Build', tag:'phase-build', desc:'Pushing into ultra territory' },
-  { start: new Date('2026-07-20'), end: new Date('2026-08-23'), name:'Peak', tag:'phase-peak', desc:'Race-specific load — biggest sessions' },
-  { start: new Date('2026-08-24'), end: new Date('2026-09-11'), name:'Taper', tag:'phase-taper', desc:'Volume drops, legs freshen' },
-  { start: new Date('2026-09-12'), end: new Date('2026-09-13'), name:'Race day', tag:'phase-race', desc:'100 km · Putney to Henley' },
+const RUNS=[
+  {date:'7 Jun',dist:23.0,hr:143,pb:true},
+  {date:'4 Jun',dist:6.2,hr:130},
+  {date:'1 Jun',dist:6.0,hr:164},
+  {date:'26 May',dist:9.0,hr:162},
+  {date:'23 May',dist:2.6,hr:155},
+  {date:'21 May',dist:10.1,hr:162},
+  {date:'17 May',dist:12.3,hr:164},
 ];
+const maxD=23.0;
+document.getElementById('run-list').innerHTML=RUNS.map(r=>{
+  const pct=Math.round((r.dist/maxD)*100);
+  const hrClass=r.hr<=145?'hr-good':r.hr<=158?'hr-ok':'hr-high';
+  const pb=r.pb?'<span class="pb-badge">PB</span>':'';
+  return `<div class="run-row">
+    <div class="run-date">${r.date}</div>
+    <div class="run-dist">${r.dist} km${pb}</div>
+    <div class="run-bar-wrap"><div class="run-bar" style="width:${pct}%"></div></div>
+    <div class="run-hr ${hrClass}">${r.hr} bpm</div>
+  </div>`;
+}).join('');
 
-const MOTIVATIONS = [
-  "The wall at 70 km is real. But so is the finish line at Henley. <strong>You only stop when you choose to.</strong>",
-  "Every step you take in training is a deposit in the pain bank. <strong>Race day is the withdrawal. Make it count.</strong>",
-  "You don't have to run it all. Walk, jog, shuffle — <strong>forward is the only direction that matters.</strong>",
-  "3,000 people will start at Putney Bridge. Most of them will finish. <strong>So will you.</strong>",
-  "The hardest part isn't the distance. It's the dark at 3am with 30 km to go. <strong>That's where you find out who you are.</strong>",
-  "Checkpoint to checkpoint. Nothing else. <strong>One marquee at a time.</strong>",
-  "Switzerland builds the engine. Tomorrowland builds the feet. Australia builds the mind. <strong>Everything counts.</strong>",
-  "A 4:18 marathon engine at walk/jog pace for 100 km. <strong>You have more than enough.</strong>",
-  "Eat before you're hungry. Drink before you're thirsty. Walk before you're broken. <strong>That's the ultra game.</strong>",
-  "Richmond feels easy. Hampton Court feels fine. Runnymede is where it starts. <strong>Henley is where it ends.</strong>",
-  "The Thames doesn't care how fast you are. It just keeps flowing. <strong>So should you.</strong>",
-  "This is a mental event that happens to involve running. <strong>Your mind finishes first.</strong>"
-];
-
-function pad(n){ return String(n).padStart(2,'0'); }
-
+function pad(n){return String(n).padStart(2,'0')}
 function tick(){
-  const now = new Date();
-  const diff = RACE - now;
-  document.getElementById('live-time').textContent =
-    now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
-  if(diff <= 0){
-    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id=>document.getElementById(id).textContent='00');
-  } else {
-    document.getElementById('cd-days').textContent = pad(Math.floor(diff/86400000));
-    document.getElementById('cd-hours').textContent = pad(Math.floor((diff%86400000)/3600000));
-    document.getElementById('cd-mins').textContent = pad(Math.floor((diff%3600000)/60000));
-    document.getElementById('cd-secs').textContent = pad(Math.floor((diff%60000)/1000));
+  const now=new Date();
+  document.getElementById('live-time').textContent=now.toLocaleTimeString('en-GB');
+  const diff=RACE-now;
+  if(diff>0){
+    const d=Math.floor(diff/86400000);
+    document.getElementById('cd-days').textContent=pad(d);
+    document.getElementById('cd-hours').textContent=pad(Math.floor((diff%86400000)/3600000));
+    document.getElementById('cd-mins').textContent=pad(Math.floor((diff%3600000)/60000));
+    document.getElementById('cd-secs').textContent=pad(Math.floor((diff%60000)/1000));
+    document.getElementById('days-inline').textContent=d;
+    document.getElementById('days-card').textContent=d;
+    document.getElementById('fun-days').textContent=d;
   }
-
-  const totalDur = RACE - TRAIN_START;
-  const elapsed = now - TRAIN_START;
-  const pct = Math.max(0,Math.min(100,Math.round((elapsed/totalDur)*100)));
-  document.getElementById('prog-fill').style.width = pct+'%';
-  document.getElementById('pct-text').textContent = pct+'% of journey complete';
-
-  const twoH = 2*60*60*1000;
-  const rem = twoH - (now.getTime() % twoH);
-  const rh = Math.floor(rem/3600000);
-  const rm = Math.floor((rem%3600000)/60000);
-  const rs = Math.floor((rem%60000)/1000);
-  document.getElementById('next-refresh').textContent = pad(rh)+':'+pad(rm)+':'+pad(rs);
+  const tot=RACE-TRAIN_START;
+  const el=now-TRAIN_START;
+  const pct=Math.max(0,Math.min(100,Math.round((el/tot)*100)));
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('pct-label').textContent=pct+'% of journey complete';
+  const twoH=2*60*60*1000;
+  const rem=twoH-(now.getTime()%twoH);
+  document.getElementById('next-refresh').textContent=pad(Math.floor(rem/3600000))+':'+pad(Math.floor((rem%3600000)/60000))+':'+pad(Math.floor((rem%60000)/1000));
 }
 
-function setPhase(){
-  const now = new Date();
-  let current = PHASES[0];
-  for(const p of PHASES){ if(now >= p.start && now <= p.end){ current=p; break; } }
-  const el = document.getElementById('current-phase');
-  el.textContent = current.name;
-  el.className = 'phase-tag '+current.tag;
-  document.getElementById('phase-desc').textContent = current.desc;
-}
+const MOTIVATIONS=[
+  "The wall at 70 km is real. But so is the finish line at Henley. <strong>You only stop when you choose to.</strong>",
+  "23 km at 143 bpm today. That's your ultra pace. <strong>Remember how that felt.</strong>",
+  "Every step in training is a deposit. <strong>Race day is the withdrawal. Make it count.</strong>",
+  "Walk, jog, shuffle — <strong>forward is the only direction that matters.</strong>",
+  "Switzerland builds the engine. Tomorrowland builds the feet. Australia builds the mind. <strong>Everything counts.</strong>",
+  "Checkpoint to checkpoint. Nothing else. <strong>One marquee at a time.</strong>",
+  "Eat before you're hungry. Drink before you're thirsty. Walk before you're broken. <strong>That's the ultra game.</strong>",
+  "The Thames doesn't care how fast you are. It just keeps flowing. <strong>So should you.</strong>",
+  "VO2 max 51 and climbing. <strong>The data says you're ready. Trust it.</strong>",
+  "3,000 people start at Putney. Most finish. <strong>So will you.</strong>",
+  "This is a mental event that happens to involve running. <strong>Your mind finishes first.</strong>",
+  "Richmond feels easy. Hampton Court feels fine. Runnymede is where it starts. <strong>Henley is where it ends.</strong>"
+];
+document.getElementById('motivation-text').innerHTML=MOTIVATIONS[Math.floor(Date.now()/(2*60*60*1000))%MOTIVATIONS.length];
 
-function setMotivation(){
-  const idx = Math.floor(Date.now()/(2*60*60*1000)) % MOTIVATIONS.length;
-  document.getElementById('motivation-text').innerHTML = MOTIVATIONS[idx];
-}
+tick();
+setInterval(tick,1000);
 
-function setFooterTime(){
-  const now = new Date();
-  const twoH = 2*60*60*1000;
-  const lastR = new Date(now.getTime() - (now.getTime()%twoH));
-  document.getElementById('footer-updated').textContent =
-    'updated '+lastR.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+
-    ' '+lastR.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-}
-
-// VO2 TREND CHART
-function initVO2Chart(){
-  const isDark = true;
-  const ctx = document.getElementById('vo2Chart').getContext('2d');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['1 Mar','8 Mar','15 Mar','22 Mar','29 Mar','5 Apr','12 Apr','19 Apr','26 Apr','3 May','10 May','16 May'],
-      datasets: [{
-        label: 'VO2 max',
-        data: [50,50,50,49,48,48,49,49,49,49,49,50],
-        borderColor: '#1D9E75',
-        backgroundColor: 'rgba(13,158,110,0.08)',
-        borderWidth: 2,
-        pointBackgroundColor: '#1D9E75',
-        pointRadius: 3,
-        pointHoverRadius: 5,
-        fill: true,
-        tension: 0.4
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1a211d',
-          borderColor: 'rgba(255,255,255,0.1)',
-          borderWidth: 1,
-          titleColor: '#8a9e90',
-          bodyColor: '#e8ede9',
-          callbacks: { label: ctx => ' VO2 max: '+ctx.parsed.y }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#4d6054', font: { family: 'DM Mono', size: 9 }, maxRotation: 45 },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        },
-        y: {
-          min: 45, max: 55,
-          ticks: { color: '#4d6054', font: { family: 'DM Mono', size: 9 }, stepSize: 1 },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        }
-      }
+const vo2Ctx=document.getElementById('vo2Chart').getContext('2d');
+new Chart(vo2Ctx,{
+  type:'line',
+  data:{
+    labels:['1 Mar','15 Mar','1 Apr','14 Apr','24 Apr','7 May','17 May','4 Jun','7 Jun'],
+    datasets:[{
+      label:'VO2 max',
+      data:[50,49,48,49,49,49,50,50,51],
+      borderColor:'#00F5FF',backgroundColor:'rgba(0,245,255,0.07)',
+      borderWidth:2,pointBackgroundColor:'#00F5FF',pointBorderColor:'#00F5FF',
+      pointRadius:3,fill:true,tension:0.4
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A0028',borderColor:'rgba(0,245,255,0.4)',borderWidth:1,titleColor:'#B08FD0',bodyColor:'#F0E6FF',callbacks:{label:c=>' VO2: '+c.parsed.y}}},
+    scales:{
+      x:{ticks:{color:'#6B4F88',font:{size:9},maxRotation:45},grid:{color:'rgba(180,79,255,0.08)'}},
+      y:{min:45,max:55,ticks:{color:'#6B4F88',font:{size:9},stepSize:1},grid:{color:'rgba(180,79,255,0.08)'}}
     }
-  });
-}
+  }
+});
 
-// STEPS CHART
-function initStepsChart(){
-  const ctx = document.getElementById('stepsChart').getContext('2d');
-  const labels = ['25 Mar','1 Apr','8 Apr','15 Apr','22 Apr','29 Apr','6 May','13 May'];
-  const data = [83806,103519,93798,104323,102881,112009,113552,92377];
-  const avg = Math.round(data.reduce((a,b)=>a+b,0)/data.length);
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Weekly steps',
-          data,
-          backgroundColor: data.map(v => v >= avg ? 'rgba(13,158,110,0.7)' : 'rgba(13,158,110,0.3)'),
-          borderColor: data.map(v => v >= avg ? '#1D9E75' : 'rgba(13,158,110,0.4)'),
-          borderWidth: 1,
-          borderRadius: 3
-        },
-        {
-          label: 'Average',
-          data: data.map(()=>avg),
-          type: 'line',
-          borderColor: 'rgba(200,146,42,0.6)',
-          borderWidth: 1.5,
-          borderDash: [4,4],
-          pointRadius: 0,
-          fill: false,
-          tension: 0
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1a211d',
-          borderColor: 'rgba(255,255,255,0.1)',
-          borderWidth: 1,
-          titleColor: '#8a9e90',
-          bodyColor: '#e8ede9',
-          callbacks: {
-            label: ctx => ctx.dataset.label === 'Average'
-              ? ' Avg: '+avg.toLocaleString()
-              : ' '+ctx.parsed.y.toLocaleString()+' steps'
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#4d6054', font: { family: 'DM Mono', size: 9 }, maxRotation: 45 },
-          grid: { display: false }
-        },
-        y: {
-          ticks: {
-            color: '#4d6054',
-            font: { family: 'DM Mono', size: 9 },
-            callback: v => (v/1000).toFixed(0)+'k'
-          },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        }
-      }
+const stepsCtx=document.getElementById('stepsChart').getContext('2d');
+const stepsData=[94306,84726,93692,107757,108343,103099,114372,80716];
+const stepsLabels=['23 Mar','30 Mar','6 Apr','13 Apr','20 Apr','27 Apr','4 May','11 May'];
+const avg=Math.round(stepsData.reduce((a,b)=>a+b,0)/stepsData.length);
+new Chart(stepsCtx,{
+  type:'bar',
+  data:{
+    labels:stepsLabels,
+    datasets:[
+      {label:'Steps',data:stepsData,backgroundColor:stepsData.map(v=>v>=avg?'rgba(180,79,255,0.7)':'rgba(180,79,255,0.25)'),borderColor:stepsData.map(v=>v>=avg?'#B44FFF':'rgba(180,79,255,0.4)'),borderWidth:1,borderRadius:0},
+      {label:'Avg',data:stepsData.map(()=>avg),type:'line',borderColor:'rgba(255,45,155,0.7)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,fill:false}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#1A0028',borderColor:'rgba(180,79,255,0.4)',borderWidth:1,titleColor:'#B08FD0',bodyColor:'#F0E6FF',callbacks:{label:c=>c.dataset.label==='Avg'?' Avg: '+avg.toLocaleString():' '+c.parsed.y.toLocaleString()+' steps'}}},
+    scales:{
+      x:{ticks:{color:'#6B4F88',font:{size:9},maxRotation:45},grid:{display:false}},
+      y:{ticks:{color:'#6B4F88',font:{size:9},callback:v=>(v/1000).toFixed(0)+'k'},grid:{color:'rgba(180,79,255,0.08)'}}
     }
-  });
-}
+  }
+});
 
-// WEATHER — Open-Meteo, Henley-on-Thames coords
 async function loadWeather(){
-  const grid = document.getElementById('weather-grid');
-  const status = document.getElementById('weather-status');
-  try {
-    const url = 'https://api.open-meteo.com/v1/forecast?latitude=51.535&longitude=-0.900&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m&timezone=Europe/London&start_date=2026-09-12&end_date=2026-09-12';
-    const r = await fetch(url);
-    const d = await r.json();
-
-    const WMO = {
-      0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
-      45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
-      61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',80:'Showers',81:'Showers',82:'Heavy showers',
-      95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'
-    };
-    const WMO_ICON = {
-      0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',
-      51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',
-      71:'🌨️',73:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'
-    };
-
-    const hours = [0,4,6,8,10,12,14,16,18,20,22];
-    const labels = ['Midnight','4am','6am ▶','8am','10am','Noon','2pm','4pm','6pm','8pm','10pm'];
-
-    grid.innerHTML = hours.map((h,i) => {
-      const temp = Math.round(d.hourly.temperature_2m[h]);
-      const code = d.hourly.weathercode[h];
-      const rain = d.hourly.precipitation_probability[h];
-      const wind = Math.round(d.hourly.windspeed_10m[h]);
-      const icon = WMO_ICON[code] || '🌡️';
-      const desc = WMO[code] || 'Unknown';
-      const isStart = h === 6;
-      return `<div class="weather-cell" style="${isStart?'border:1px solid rgba(13,158,110,0.4);':''}">
-        <div class="weather-time" style="${isStart?'color:var(--teal)':''}">${labels[i]}</div>
-        <div class="weather-icon">${icon}</div>
-        <div class="weather-temp">${temp}°C</div>
-        <div class="weather-desc">${desc}</div>
-        <div class="weather-desc" style="color:var(--text-dim);margin-top:2px">${rain}% rain · ${wind}km/h</div>
+  const grid=document.getElementById('weather-grid');
+  const status=document.getElementById('weather-status');
+  try{
+    const url='https://api.open-meteo.com/v1/forecast?latitude=51.535&longitude=-0.900&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m&timezone=Europe/London&start_date=2026-09-12&end_date=2026-09-12';
+    const r=await fetch(url);
+    const d=await r.json();
+    const WMO={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',51:'Light drizzle',53:'Drizzle',61:'Light rain',63:'Rain',80:'Showers',95:'Thunderstorm'};
+    const ICON={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',53:'🌦️',61:'🌧️',63:'🌧️',80:'🌦️',95:'⛈️'};
+    const hours=[0,4,6,8,10,12,14,16,18,20,22];
+    const labels=['Midnight','4 AM','6 AM ▶','8 AM','10 AM','Noon','2 PM','4 PM','6 PM','8 PM','10 PM'];
+    grid.innerHTML=hours.map((h,i)=>{
+      const temp=Math.round(d.hourly.temperature_2m[h]);
+      const code=d.hourly.weathercode[h];
+      const rain=d.hourly.precipitation_probability[h];
+      const wind=Math.round(d.hourly.windspeed_10m[h]);
+      const isStart=h===6;
+     return `<div class="weather-cell" style="${isStart?'border-color:var(--neon-blue);':''}">
+        <div class="weather-time" style="${isStart?'color:var(--neon-blue)':''}">${labels[i]}</div>
+        <div class="weather-icon">${ICON[code]||'?'}</div>
+        <div class="weather-temp">${temp}&deg;C</div>
+        <div class="weather-desc">${WMO[code]||'-'}</div>
+        <div class="weather-desc">${rain}% - ${wind}km/h</div>
       </div>`;
     }).join('');
-
-    status.innerHTML = '<span style="color:var(--teal)">●</span> Live forecast · Open-Meteo · Henley-on-Thames (51.5°N, 0.9°W) · updates hourly';
-  } catch(e) {
-    grid.innerHTML = '<div style="color:var(--text-mid);font-size:12px;padding:.5rem">Weather data unavailable — check back closer to race day. September Thames Valley is typically 12–22°C.</div>';
-    status.innerHTML = 'Could not load forecast. Open-Meteo may not have data this far ahead yet.';
+    status.innerHTML='<span style="color:var(--neon-green)">●</span> Live · Open-Meteo · Henley 51.5°N 0.9°W · updates hourly';
+  }catch(e){
+    grid.innerHTML='<div style="color:var(--text-mid);font-size:12px;padding:.5rem;font-family:var(--font-body)">Weather unavailable — check back closer to race day.</div>';
+    status.textContent='Could not load forecast.';
   }
 }
-
-// INIT
-setPhase();
-setMotivation();
-setFooterTime();
-initVO2Chart();
-initStepsChart();
 loadWeather();
-tick();
-setInterval(tick, 1000);
 </script>
 </body>
 </html>
