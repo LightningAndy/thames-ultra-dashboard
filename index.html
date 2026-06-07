@@ -180,13 +180,13 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
   </div>
   <div class="card card-blue">
     <div class="card-label">Load ratio</div>
-    <div class="card-value cv-blue">1.0</div>
-    <div class="card-sub">perfectly balanced</div>
+    <div class="card-value cv-blue">1.1</div>
+    <div class="card-sub">optimal · building nicely</div>
   </div>
   <div class="card card-pink">
     <div class="card-label">HRV status</div>
     <div class="card-value cv-pink" style="font-size:1.1rem;padding-top:6px">Balanced</div>
-    <div class="card-sub">51–57 ms weekly avg</div>
+    <div class="card-sub">53 ms weekly avg · last night 61 ms</div>
   </div>
   <div class="card">
     <div class="card-label">Longest run ever</div>
@@ -205,13 +205,18 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
   </div>
   <div class="card card-pink">
     <div class="card-label">Weekly avg steps</div>
-    <div class="card-value" style="font-size:1.3rem">98k</div>
-    <div class="card-sub">~70 km/week on foot</div>
+    <div class="card-value" style="font-size:1.3rem">110k</div>
+    <div class="card-sub">~93 km/week on foot</div>
   </div>
   <div class="card card-blue">
     <div class="card-label">Days to race</div>
     <div class="card-value cv-blue" id="days-card">--</div>
     <div class="card-sub">12 September 2026</div>
+  </div>
+  <div class="card">
+    <div class="card-label">AM Readiness</div>
+    <div class="card-value cv-green">73</div>
+    <div class="card-sub">39 hrs recovery needed post-run</div>
   </div>
 </div>
 
@@ -245,7 +250,7 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
   <div class="card card-pink">
     <div class="card-label">Weekly steps · last 8 weeks</div>
     <div style="position:relative;width:100%;height:180px">
-      <canvas id="stepsChart" role="img" aria-label="Weekly step count bar chart showing 80k to 114k steps over 8 weeks">Weekly steps ranged from 80,716 to 114,372 over the last 8 weeks.</canvas>
+      <canvas id="stepsChart" role="img" aria-label="Weekly step count bar chart showing 97k to 130k steps over 8 weeks">Weekly steps ranged from 96,953 to 130,102 over the last 8 weeks.</canvas>
     </div>
   </div>
 </div>
@@ -254,7 +259,7 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
 <div class="fun-grid">
   <div class="fun-stat"><div class="fun-num" id="fun-days">96</div><div class="fun-label">days to race</div></div>
   <div class="fun-stat"><div class="fun-num" style="color:var(--neon-purple)">19</div><div class="fun-label">runs logged</div></div>
-  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-pink)">163</div><div class="fun-label">avg bpm (↓ improving)</div></div>
+  <div class="fun-stat"><div class="fun-num" style="color:var(--neon-pink)">154</div><div class="fun-label">avg bpm (↓ improving)</div></div>
   <div class="fun-stat"><div class="fun-num" style="color:var(--neon-green)">51</div><div class="fun-label">VO2 max · up from 50</div></div>
   <div class="fun-stat"><div class="fun-num" style="color:var(--neon-blue)">2,500</div><div class="fun-label">cal burned today</div></div>
   <div class="fun-stat"><div class="fun-num" style="color:var(--neon-purple)">7</div><div class="fun-label">gym sessions</div></div>
@@ -272,7 +277,7 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
     <span class="act-pill ap-swim">swimming × 2</span>
     <span class="act-pill ap-tennis">tennis × 2</span>
     <span class="act-pill ap-bike">cycling × 4</span>
-    <span class="act-pill ap-bike">e-bike × 3</span>
+    <span class="act-pill ap-bike">e-bike × 4</span>
     <span class="act-pill ap-gym">hiking × 1</span>
   </div>
   <div style="margin-top:.875rem;font-family:var(--font-display);font-size:8px;color:var(--text-dim);letter-spacing:.06em">73 total activities since 1 May · averaging 3.5 per day including walks</div>
@@ -297,13 +302,13 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
   <div class="card card-blue">
     <div class="card-label">Key stats</div>
     <ul class="stat-list">
-      <li><span class="k">Runs this week</span><span class="v sv-green">2 sessions</span></li>
-      <li><span class="k">Run distance this week</span><span class="v sv-green">29.2 km</span></li>
+      <li><span class="k">Runs this week</span><span class="v sv-green">3 sessions</span></li>
+      <li><span class="k">Run distance this week</span><span class="v sv-green">35.3 km</span></li>
       <li><span class="k">Longest run ever</span><span class="v sv-green">23 km · today</span></li>
       <li><span class="k">Today's avg HR</span><span class="v sv-green">143 bpm ✓</span></li>
       <li><span class="k">Total runs since Apr</span><span class="v sv-purple">19 sessions</span></li>
       <li><span class="k">Predicted marathon</span><span class="v sv-blue">4:18:06</span></li>
-      <li><span class="k">Sleep score (last)</span><span class="v">70/100 · Fair</span></li>
+      <li><span class="k">Sleep score (last)</span><span class="v sv-green">85/100 · Good</span></li>
       <li><span class="k">Switzerland departs</span><span class="v sv-pink">20 days</span></li>
     </ul>
   </div>
@@ -407,10 +412,10 @@ const vo2Ctx=document.getElementById('vo2Chart').getContext('2d');
 new Chart(vo2Ctx,{
   type:'line',
   data:{
-    labels:['1 Mar','15 Mar','1 Apr','14 Apr','24 Apr','7 May','17 May','4 Jun','7 Jun'],
+    labels:['1 Mar','15 Mar','1 Apr','14 Apr','12 May','23 May','7 Jun'],
     datasets:[{
       label:'VO2 max',
-      data:[50,49,48,49,49,49,50,50,51],
+      data:[50,49,48,49,50,51,51],
       borderColor:'#00F5FF',backgroundColor:'rgba(0,245,255,0.07)',
       borderWidth:2,pointBackgroundColor:'#00F5FF',pointBorderColor:'#00F5FF',
       pointRadius:3,fill:true,tension:0.4
@@ -427,8 +432,8 @@ new Chart(vo2Ctx,{
 });
 
 const stepsCtx=document.getElementById('stepsChart').getContext('2d');
-const stepsData=[94306,84726,93692,107757,108343,103099,114372,80716];
-const stepsLabels=['23 Mar','30 Mar','6 Apr','13 Apr','20 Apr','27 Apr','4 May','11 May'];
+const stepsData=[107757,108343,103099,114372,104692,96953,111657,130102];
+const stepsLabels=['13 Apr','20 Apr','27 Apr','4 May','11 May','18 May','25 May','1 Jun'];
 const avg=Math.round(stepsData.reduce((a,b)=>a+b,0)/stepsData.length);
 new Chart(stepsCtx,{
   type:'bar',
