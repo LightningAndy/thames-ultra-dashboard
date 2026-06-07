@@ -333,7 +333,7 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border-pur
 
 <footer>
   <div>Thames Path Ultra Challenge · 12–13 September 2026 · ultrachallenge.com</div>
-  <div id="g-footer-date">Garmin data · 7 Jun 2026 · <span class="live-dot"></span> live · auto-refreshes every 2 hrs</div>
+  <div id="g-footer-date">Garmin data · 7 Jun 2026 · <span class="live-dot"></span> live · auto-refreshes every 3 hrs</div>
 </footer>
 
 </div>
@@ -390,8 +390,8 @@ function tick(){
   const pct=Math.max(0,Math.min(100,Math.round((el/tot)*100)));
   document.getElementById('prog-fill').style.width=pct+'%';
   document.getElementById('pct-label').textContent=pct+'% of journey complete';
-  const twoH=2*60*60*1000;
-  const rem=twoH-(now.getTime()%twoH);
+  const threeH=3*60*60*1000;
+  const rem=threeH-(now.getTime()%threeH);
   document.getElementById('next-refresh').textContent=pad(Math.floor(rem/3600000))+':'+pad(Math.floor((rem%3600000)/60000))+':'+pad(Math.floor((rem%60000)/1000));
 }
 
@@ -489,7 +489,7 @@ function applyGarminData(G){
   $s('g-pred-hm',G.predHM);
   $s('g-pred-marathon',G.predMarathonFull);
   $s('g-avg-bpm',G.avgRunHR);
-  $h('g-footer-date','Garmin data · '+G.date+' · <span class="live-dot"></span> live · auto-refreshes every 2 hrs');
+  $h('g-footer-date','Garmin data · '+G.date+' · <span class="live-dot"></span> live · auto-refreshes every 3 hrs');
   if(G.runs)renderRuns(G.runs);
   if(G.vo2Trend)initVO2Chart(G.vo2Trend.labels,G.vo2Trend.data);
   if(G.stepsChart)initStepsChart(G.stepsChart.labels,G.stepsChart.data);
