@@ -11,10 +11,10 @@
   "trainingStatus": "Productive",
   "aerobicBalance": "Balanced",
   "aerobicBalanceSub": "good aerobic mix",
-  "stepsAvgK": "108k",
+  "stepsAvgK": "109k",
   "stepsKmWeekly": "~93 km/week on foot",
-  "amReadiness": 48,
-  "readinessSub": "1396 hrs recovery needed post-run",
+  "amReadiness": 50,
+  "readinessSub": "1219 hrs recovery needed post-run",
   "runsThisWeek": "1 session",
   "runDistWeek": "5.1 km",
   "longestRunEver": "23.1 km \u00b7 7 Jun",
@@ -96,7 +96,7 @@
       109029,
       104960,
       109657,
-      110258
+      120006
     ],
     "labels": [
       "",
