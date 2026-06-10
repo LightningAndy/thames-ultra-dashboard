@@ -13,8 +13,8 @@
   "aerobicBalanceSub": "good aerobic mix",
   "stepsAvgK": "108k",
   "stepsKmWeekly": "~93 km/week on foot",
-  "amReadiness": 63,
-  "readinessSub": "ready to train",
+  "amReadiness": 51,
+  "readinessSub": "990 hrs recovery needed post-run",
   "runsThisWeek": "1 session",
   "runDistWeek": "5.1 km",
   "longestRunEver": "23.1 km \u00b7 7 Jun",
@@ -96,7 +96,7 @@
       108943,
       109019,
       112903,
-      108353
+      112747
     ],
     "labels": [
       "",
