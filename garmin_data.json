@@ -11,25 +11,30 @@
   "trainingStatus": "Productive",
   "aerobicBalance": "Balanced",
   "aerobicBalanceSub": "good aerobic mix",
-  "stepsAvgK": "107k",
+  "stepsAvgK": "109k",
   "stepsKmWeekly": "~93 km/week on foot",
-  "amReadiness": 52,
-  "readinessSub": "343 hrs recovery needed post-run",
-  "runsThisWeek": "1 session",
-  "runDistWeek": "5.1 km",
+  "amReadiness": 41,
+  "readinessSub": "1338 hrs recovery needed post-run",
+  "runsThisWeek": "2 sessions",
+  "runDistWeek": "10.1 km",
   "longestRunEver": "23.1 km \u00b7 7 Jun",
-  "todayAvgHR": "157 bpm \u2713",
-  "totalRuns": "9 sessions",
+  "todayAvgHR": "155 bpm \u2713",
+  "totalRuns": "10 sessions",
   "predMarathon": "4:18:06",
   "sleepScore": "57/100 \u00b7 Poor",
   "sleepColour": "sv-pink",
   "switzDays": "16 days",
-  "avgRunHR": 153,
+  "avgRunHR": 152,
   "pred5k": "23:24",
   "pred10k": "50:56",
   "predHM": "1:56:01",
   "predMarathonFull": "4:18:06",
   "runs": [
+    {
+      "date": "11 Jun",
+      "dist": 5.0,
+      "hr": 155
+    },
     {
       "date": "9 Jun",
       "dist": 5.1,
@@ -60,11 +65,6 @@
       "date": "23 May",
       "dist": 2.6,
       "hr": 155
-    },
-    {
-      "date": "21 May",
-      "dist": 10.1,
-      "hr": 162
     }
   ],
   "vo2Trend": {
@@ -96,7 +96,7 @@
       111291,
       104216,
       115519,
-      101267
+      114910
     ],
     "labels": [
       "",
