@@ -6,30 +6,36 @@
   "loadSub": "optimal \u00b7 building nicely",
   "hrvStatus": "Balanced",
   "hrvSub": "50 ms weekly avg \u00b7 last night 45 ms",
-  "longestRunKm": 23.1,
-  "longestRunDate": "7 Jun",
+  "longestRunKm": 30.0,
+  "longestRunDate": "14 Jun",
   "trainingStatus": "Productive",
   "aerobicBalance": "Balanced",
   "aerobicBalanceSub": "good aerobic mix",
-  "stepsAvgK": "106k",
+  "stepsAvgK": "110k",
   "stepsKmWeekly": "~93 km/week on foot",
-  "amReadiness": 40,
-  "readinessSub": "160 hrs recovery needed post-run",
-  "runsThisWeek": "2 sessions",
-  "runDistWeek": "10.1 km",
-  "longestRunEver": "23.1 km \u00b7 7 Jun",
-  "todayAvgHR": "155 bpm \u2713",
+  "amReadiness": 1,
+  "readinessSub": "3744 hrs recovery needed post-run",
+  "runsThisWeek": "3 sessions",
+  "runDistWeek": "40.1 km",
+  "longestRunEver": "30.0 km \u00b7 14 Jun",
+  "todayAvgHR": "143 bpm \u2713",
   "totalRuns": "9 sessions",
   "predMarathon": "4:18:06",
   "sleepScore": "49/100 \u00b7 Poor",
   "sleepColour": "sv-pink",
   "switzDays": "13 days",
-  "avgRunHR": 152,
+  "avgRunHR": 150,
   "pred5k": "23:24",
   "pred10k": "50:56",
   "predHM": "1:56:01",
   "predMarathonFull": "4:18:06",
   "runs": [
+    {
+      "date": "14 Jun",
+      "dist": 30.0,
+      "hr": 143,
+      "pb": true
+    },
     {
       "date": "11 Jun",
       "dist": 5.0,
@@ -43,8 +49,7 @@
     {
       "date": "7 Jun",
       "dist": 23.1,
-      "hr": 143,
-      "pb": true
+      "hr": 143
     },
     {
       "date": "4 Jun",
@@ -60,11 +65,6 @@
       "date": "26 May",
       "dist": 9.0,
       "hr": 162
-    },
-    {
-      "date": "23 May",
-      "dist": 2.6,
-      "hr": 155
     }
   ],
   "vo2Trend": {
@@ -96,7 +96,7 @@
       96953,
       111657,
       130508,
-      83247
+      114947
     ],
     "labels": [
       "",
