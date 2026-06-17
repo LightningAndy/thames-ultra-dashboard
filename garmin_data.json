@@ -11,7 +11,7 @@
   "trainingStatus": "Productive",
   "aerobicBalance": "Balanced",
   "aerobicBalanceSub": "good aerobic mix",
-  "stepsAvgK": "109k",
+  "stepsAvgK": "110k",
   "stepsKmWeekly": "~93 km/week on foot",
   "amReadiness": 63,
   "readinessSub": "ready to train",
@@ -96,7 +96,7 @@
       109019,
       112903,
       112964,
-      115437
+      120013
     ],
     "labels": [
       "",
