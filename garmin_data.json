@@ -11,7 +11,7 @@
   "trainingStatus": "Productive",
   "aerobicBalance": "Balanced",
   "aerobicBalanceSub": "good aerobic mix",
-  "stepsAvgK": "109k",
+  "stepsAvgK": "110k",
   "stepsKmWeekly": "~93 km/week on foot",
   "amReadiness": 25,
   "readinessSub": "434 hrs recovery needed post-run",
@@ -96,7 +96,7 @@
       104216,
       115519,
       115472,
-      108361
+      111212
     ],
     "labels": [
       "",
