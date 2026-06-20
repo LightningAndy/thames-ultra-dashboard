@@ -5,7 +5,7 @@
   "loadRatio": "1.1",
   "loadSub": "optimal \u00b7 building nicely",
   "hrvStatus": "Balanced",
-  "hrvSub": "53 ms weekly avg \u00b7 last night 61 ms",
+  "hrvSub": "50 ms weekly avg \u00b7 last night 51 ms",
   "longestRunKm": 30.0,
   "longestRunDate": "14 Jun",
   "trainingStatus": "Productive",
@@ -13,7 +13,7 @@
   "aerobicBalanceSub": "good aerobic mix",
   "stepsAvgK": "107k",
   "stepsKmWeekly": "~93 km/week on foot",
-  "amReadiness": 73,
+  "amReadiness": 66,
   "readinessSub": "ready to train",
   "runsThisWeek": "0 sessions",
   "runDistWeek": "0.0 km",
@@ -21,8 +21,8 @@
   "todayAvgHR": "143 bpm \u2713",
   "totalRuns": "9 sessions",
   "predMarathon": "4:18:06",
-  "sleepScore": "85/100 \u00b7 Good",
-  "sleepColour": "sv-green",
+  "sleepScore": "76/100 \u00b7 Fair",
+  "sleepColour": "sv-blue",
   "switzDays": "7 days",
   "avgRunHR": 150,
   "pred5k": "23:24",
@@ -96,7 +96,7 @@
       111900,
       104207,
       120694,
-      96418
+      96782
     ],
     "labels": [
       "",
