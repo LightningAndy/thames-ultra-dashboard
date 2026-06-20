@@ -11,7 +11,7 @@
   "trainingStatus": "Productive",
   "aerobicBalance": "Balanced",
   "aerobicBalanceSub": "good aerobic mix",
-  "stepsAvgK": "107k",
+  "stepsAvgK": "108k",
   "stepsKmWeekly": "~93 km/week on foot",
   "amReadiness": 66,
   "readinessSub": "ready to train",
@@ -19,7 +19,7 @@
   "runDistWeek": "0.0 km",
   "longestRunEver": "30.0 km \u00b7 14 Jun",
   "todayAvgHR": "143 bpm \u2713",
-  "totalRuns": "9 sessions",
+  "totalRuns": "8 sessions",
   "predMarathon": "4:18:06",
   "sleepScore": "76/100 \u00b7 Fair",
   "sleepColour": "sv-blue",
@@ -96,7 +96,7 @@
       111900,
       104207,
       120694,
-      96782
+      103111
     ],
     "labels": [
       "",
