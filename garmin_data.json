@@ -1,19 +1,19 @@
 {
-  "date": "19 Jun 2026",
+  "date": "20 Jun 2026",
   "vo2max": 51,
   "vo2maxPrecise": 51.0,
   "loadRatio": "1.1",
   "loadSub": "optimal \u00b7 building nicely",
   "hrvStatus": "Balanced",
-  "hrvSub": "52 ms weekly avg \u00b7 last night 63 ms",
+  "hrvSub": "53 ms weekly avg \u00b7 last night 61 ms",
   "longestRunKm": 30.0,
   "longestRunDate": "14 Jun",
   "trainingStatus": "Productive",
   "aerobicBalance": "Balanced",
   "aerobicBalanceSub": "good aerobic mix",
-  "stepsAvgK": "109k",
+  "stepsAvgK": "107k",
   "stepsKmWeekly": "~93 km/week on foot",
-  "amReadiness": 56,
+  "amReadiness": 73,
   "readinessSub": "ready to train",
   "runsThisWeek": "0 sessions",
   "runDistWeek": "0.0 km",
@@ -21,9 +21,9 @@
   "todayAvgHR": "143 bpm \u2713",
   "totalRuns": "9 sessions",
   "predMarathon": "4:18:06",
-  "sleepScore": "73/100 \u00b7 Fair",
-  "sleepColour": "sv-blue",
-  "switzDays": "8 days",
+  "sleepScore": "85/100 \u00b7 Good",
+  "sleepColour": "sv-green",
+  "switzDays": "7 days",
   "avgRunHR": 150,
   "pred5k": "23:24",
   "pred10k": "50:56",
@@ -75,7 +75,7 @@
       "14 Apr",
       "12 May",
       "23 May",
-      "19 Jun"
+      "20 Jun"
     ],
     "data": [
       50,
@@ -89,14 +89,14 @@
   },
   "stepsChart": {
     "data": [
-      116296,
-      97042,
-      103581,
-      110665,
-      104156,
-      118230,
-      112863,
-      109898
+      112009,
+      113552,
+      92377,
+      109663,
+      111900,
+      104207,
+      120694,
+      96418
     ],
     "labels": [
       "",
